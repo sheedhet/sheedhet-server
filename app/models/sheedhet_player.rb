@@ -49,6 +49,13 @@ class SheedhetPlayer
     cards[target] << card
   end
 
+  def valid_swap?(play:)
+    from_play   = (play[:in_hand] + play[:face_up]).sort
+    from_player = (cards[:in_hand] + cards[:face_up]).sort
+    valid_size  = [from_play, from_player].all? {|x| x.size == hand_size}
+    from_play == from_player && valid_size
+  end
+
   def random_name
     [ 'Ted',
       'Bill',
