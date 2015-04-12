@@ -14,6 +14,16 @@ class SheedhetGame #< ActiveRecord::Base
     @play_pile    = []
   end
 
+  def ==(other_game)
+    other_game.class == self.class && other_game.as_json == as_json
+  end
+
+  alias_method :eql?, :==
+
+  def hash
+    as_json.hash
+  end
+
   def game_state
     { discard_pile: discard_pile,
       draw_pile: draw_pile,

@@ -29,7 +29,7 @@ class SheedhetGameFactory
 
   def deal_new_game
     @game_cards.shuffle!
-    [:face_down, :face_up, :in_hand].each{ |target| deal_everyone(target) }
+    SheedhetPlayer::PILES.each{ |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)

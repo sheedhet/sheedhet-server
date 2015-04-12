@@ -1,6 +1,8 @@
 class SheedhetPlayer
   attr_accessor :cards, :name, :position, :swap_done
 
+  PILES = [:face_down, :face_up, :in_hand]
+
   def initialize(
     cards: { in_hand: [], face_up: [], face_down: [] },
     name: nil,
@@ -11,6 +13,16 @@ class SheedhetPlayer
     @name      = name || random_name
     @position  = position || (raise ArgumentError, "Player needs position")
     @swap_done = swap_done
+  end
+
+  def ==(other_player)
+    other_player.class == self.class && other_player.as_json == as_json
+  end
+
+  alias_method :eql?, :==
+
+  def hash
+    as_json.hash
   end
 
   def as_json
@@ -42,7 +54,9 @@ class SheedhetPlayer
   end
 
   def remove_from(card:, target:)
-    cards[target].slice! cards[target].index(card)
+    location = cards[target].index(card)
+    raise ArgumentError, "Card not found at target" if location.nil?
+    cards[target].slice! location
   end
 
   def add_to(card:, target:)
