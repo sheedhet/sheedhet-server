@@ -11,6 +11,10 @@ gem 'puma'
 
 gem 'sqlite3'
 
+gem 'rspec'
+
+gem 'rubocop'
+
 gem 'awesome_print'
 gem 'pry'
 
