@@ -9,8 +9,9 @@ RSpec.describe SheedhetPlayer, type: :model do
     end
   end
   subject(:player) { SheedhetPlayer.new(cards: cards, position: 0) }
+
   describe '#remove_from' do
-    context 'when valid input' do
+    context 'with valid input' do
       it 'removes the card' do
         target = SheedhetPlayer::PILES.sample
         card = player.cards[target].sample
@@ -27,6 +28,17 @@ RSpec.describe SheedhetPlayer, type: :model do
         expect do
           player.remove_from(card: card, target: targets.last)
         end.to raise_error
+      end
+    end
+  end
+
+  describe '#add_to' do
+    context 'with valid input' do
+      it 'adds the card' do
+        target = SheedhetPlayer::PILES.sample
+        card = player.cards[target].sample
+        result = player.add_to(card: card, target: target)
+        expect(player.cards[target]).to include card
       end
     end
   end
