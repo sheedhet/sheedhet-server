@@ -10,7 +10,7 @@ RSpec.describe SheedhetPlayer, type: :model do
     end
   end
 
-  subject(:player) { SheedhetPlayer.new(cards: cards) }
+  subject(:player) { SheedhetPlayer.new(cards: cards, position: 0) }
 
   describe '#remove_from' do
     context 'card exists in target' do

@@ -53,7 +53,7 @@ class SheedhetGameFactory
 
   def create_players(existing_players: [])
     Array.new(@num_players) do |i|
-      player_to_add = existing_players.fetch i, nil
+      player_to_add = existing_players.fetch i, { position: i }
       SheedhetPlayer.new(player_to_add)
     end
   end

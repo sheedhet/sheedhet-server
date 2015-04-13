@@ -1,15 +1,17 @@
 class SheedhetPlayer
-  attr_accessor :cards, :name, :swap_done
+  attr_accessor :cards, :name, :position, :swap_done
 
   PILES = [:face_down, :face_up, :in_hand]
 
   def initialize(
     cards: { in_hand: [], face_up: [], face_down: [] },
     name: random_name,
+    position: 0,
     swap_done: false
   )
     @cards     = cards
     @name      = name
+    @position  = position
     @swap_done = swap_done
   end
 
@@ -26,7 +28,8 @@ class SheedhetPlayer
   def as_json
     { name: @name,
       cards: @cards.as_json,
-      swap_done: @swap_done,
+      position: @position,
+      swap_done: @swap_done
     }
   end
 
