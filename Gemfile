@@ -17,6 +17,7 @@ gem 'rubocop'
 
 gem 'awesome_print'
 gem 'pry'
+gem 'pry-rails'
 
 # group :development, :test do
   gem 'rspec-rails'
