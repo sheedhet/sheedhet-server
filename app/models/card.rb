@@ -5,7 +5,7 @@ class Card
   FACES = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k' ]
 
   def self.random_card
-    FACES.sample + SUITS.sample
+    new(face: FACES.sample, suit: SUITS.sample)
   end
 
   def initialize(suit: 's', face: 'a')
@@ -18,6 +18,10 @@ class Card
   end
 
   alias_method :eql?, :==
+
+  def <=>(other_card)
+    self.as_json <=> other_card.as_json
+  end
 
   def hash
     as_json.hash
