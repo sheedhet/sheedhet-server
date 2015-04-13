@@ -5,13 +5,13 @@ class SheedhetPlayer
 
   def initialize(
     cards: { in_hand: [], face_up: [], face_down: [] },
-    name: nil,
-    position: nil,
+    name: random_name,
+    position: 0,
     swap_done: false
   )
     @cards     = cards
-    @name      = name || random_name
-    @position  = position || (raise ArgumentError, "Player needs position")
+    @name      = name
+    @position  = position
     @swap_done = swap_done
   end
 
@@ -63,13 +63,6 @@ class SheedhetPlayer
     cards[target] << card
   end
 
-  def valid_swap?(play:)
-    from_play   = (play[:in_hand] + play[:face_up]).sort
-    from_player = (cards[:in_hand] + cards[:face_up]).sort
-    valid_size  = [from_play, from_player].all? {|x| x.size == hand_size}
-    from_play == from_player && valid_size
-  end
-
   def random_name
     [ 'Ted',
       'Bill',
@@ -93,5 +86,4 @@ class SheedhetPlayer
       'Laura'
     ].sample
   end
-
 end

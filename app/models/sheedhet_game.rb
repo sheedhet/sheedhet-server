@@ -59,9 +59,18 @@ class SheedhetGame #< ActiveRecord::Base
   end
 
   def valid_swap?(play)
-    hasnt_played_yet?(play_request[:player]) && player.valid_swap?(play)
+    from_play    = (play[:in_hand] + play[:face_up]).sort
+    from_player  = (cards[:in_hand] + cards[:face_up]).sort
+    valid_cards  = from_play == from_player
+    valid_size   = [from_play, from_player].all? {|x| x.size == hand_size}
+    valid_action = play[:action] == 'swap'
+    valid_player = play[:player] == self
+    hasnt_played_yet?(play_request[:player]) &&
+      valid_cards &&
+      valid_action &&
+      valid_player &&
+      valid_size
   end
-
 
   def hasnt_played_yet?(player)
     history.select do |old_play|
