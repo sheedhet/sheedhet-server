@@ -59,14 +59,15 @@ class SheedhetGame #< ActiveRecord::Base
   end
 
   def valid_swap?(play)
-    cards        = players[play[:player].position].cards
-    from_play    = (play[:in_hand] + play[:face_up]).sort
-    from_player  = (cards[:in_hand] + cards[:face_up]).sort
+    player      = players[play[:player].position]
+    cards       = player.cards
+    from_play   = (play[:in_hand] + play[:face_up]).sort
+    from_player = (cards[:in_hand] + cards[:face_up]).sort
     valid = {
       cards: from_play == from_player,
-      size: [from_play, from_player].all? {|x| x.size == hand_size},
+      size: [play[:in_hand], play[:face_up]].all? { |x| x.size == hand_size },
       action: play[:action] == 'swap',
-      player: play[:player] == self
+      player: play[:player] == player
     }
     hasnt_played_yet?(play[:player]) && valid.values.all?
   end

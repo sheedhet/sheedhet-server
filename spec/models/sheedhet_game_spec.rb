@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe SheedhetGame, type: :model do
-  subject(:game) { SheedhetGameFactory.new.build }
-  let(:player) { game.players.sample }
+  let!(:game) { SheedhetGameFactory.new.build }
+  let!(:player) { game.players.sample }
   let(:valid_swap) do
     { action: 'swap',
       player: player,
-      in_hand: player.cards[:in_hand],
-      face_up: player.cards[:face_up]
+      in_hand: player.cards[:face_up],
+      face_up: player.cards[:in_hand]
     }
   end
 
@@ -26,21 +26,39 @@ RSpec.describe SheedhetGame, type: :model do
   end
 
   describe '#valid_swap?' do
-    context 'given valid input, returns true' do
-      it { expect(game.valid_swap?(valid_swap)).to be true }
+    context 'given valid input,' do
+      subject { game.valid_swap? valid_swap }
+      it { is_expected.to be true }
     end
 
-    context 'given invalid cards, returns false' do
-      it { expect(game.valid_swap?(swap_with_invalid_cards)).to be true }
+    context 'given invalid cards,' do
+      subject { game.valid_swap? swap_with_invalid_cards }
+      it { is_expected.to be false }
     end
 
-    context 'given invalid action, returns false' do
-      it { expect(game.valid_swap?(swap_with_invalid_action)).to be true }
+    context 'given invalid action,' do
+      subject { game.valid_swap? swap_with_invalid_action }
+      it { is_expected.to be false }
     end
 
-    context 'given invalid player, returns false' do
-      it { expect(game.valid_swap?(swap_with_invalid_player)).to be true }
+    context 'given invalid player,' do
+      subject { game.valid_swap? swap_with_invalid_player }
+      it { is_expected.to be false }
     end
   end
 
+  describe '#hasnt_played_yet' do
+    context 'player has not played,' do
+      subject { game.hasnt_played_yet? player }
+      it { is_expected.to be true }
+    end
+
+    context 'player has played,' do
+      subject do
+        game.history << { player: player, action: 'example' }
+        game.hasnt_played_yet? player
+      end
+      it { is_expected.to be false }
+    end
+  end
 end
