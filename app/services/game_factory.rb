@@ -1,4 +1,4 @@
-class SheedhetGameFactory
+class GameFactory
 
   def initialize(hand_size: 4, num_decks: 1, num_players: 3, state: {})
     @state = state
@@ -19,7 +19,7 @@ class SheedhetGameFactory
     @players = create_players
     @game_cards = create_game_cards
     deal_new_game
-    SheedhetGame.new.tap do |game|
+    Game.new.tap do |game|
       game.draw_pile = @game_cards
       game.hand_size = @hand_size
       game.players = @players
@@ -29,7 +29,7 @@ class SheedhetGameFactory
 
   def deal_new_game
     @game_cards.shuffle!
-    SheedhetPlayer::PILES.each{ |target| deal_everyone(target) }
+    Player::PILES.each{ |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)
@@ -54,7 +54,7 @@ class SheedhetGameFactory
   def create_players(existing_players: [])
     Array.new(@num_players) do |i|
       player_to_add = existing_players.fetch i, { position: i }
-      SheedhetPlayer.new(player_to_add)
+      Player.new(player_to_add)
     end
   end
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe SheedhetGame, type: :model do
-  let!(:game) { SheedhetGameFactory.new.build }
+RSpec.describe Game, type: :model do
+  let!(:game) { GameFactory.new.build }
   let!(:player) { game.players.sample }
   let(:valid_swap) do
     { action: 'swap',
@@ -22,7 +22,7 @@ RSpec.describe SheedhetGame, type: :model do
   let(:swap_with_invalid_action) { valid_swap.merge({action: 'invalid'}) }
 
   let(:swap_with_invalid_player) do
-    valid_swap.merge({player: SheedhetPlayer.new})
+    valid_swap.merge({player: Player.new})
   end
 
   describe '#valid_swap?' do

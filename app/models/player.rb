@@ -1,4 +1,4 @@
-class SheedhetPlayer
+class Player
   attr_accessor :cards, :name, :position, :swap_done
 
   PILES = [:face_down, :face_up, :in_hand]

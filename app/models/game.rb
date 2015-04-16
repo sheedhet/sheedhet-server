@@ -1,4 +1,4 @@
-class SheedhetGame #< ActiveRecord::Base
+class Game #< ActiveRecord::Base
   attr_accessor :discard_pile,
                 :draw_pile,
                 :hand_size,
@@ -51,31 +51,12 @@ class SheedhetGame #< ActiveRecord::Base
   #   end
   # end
 
-  def valid_play?(play_request)
-    # do a comparison of valid turns somehow
-    play_request[:action] == 'swap' &&
-      hasnt_played_yet?(play_request[:player]) &&
-      valid_swap?
-  end
+  # def valid_play?(play_request)
+  #   # do a comparison of valid turns somehow
+  #   play_request[:action] == 'swap' &&
+  #     hasnt_played_yet?(play_request[:player]) &&
+  #     valid_swap?
+  # end
 
-  def valid_swap?(play)
-    player      = players[play[:player].position]
-    cards       = player.cards
-    from_play   = (play[:in_hand] + play[:face_up]).sort
-    from_player = (cards[:in_hand] + cards[:face_up]).sort
-    valid = {
-      cards: from_play == from_player,
-      size: [play[:in_hand], play[:face_up]].all? { |x| x.size == hand_size },
-      action: play[:action] == 'swap',
-      player: play[:player] == player
-    }
-    hasnt_played_yet?(play[:player]) && valid.values.all?
-  end
-
-  def hasnt_played_yet?(player)
-    history.select do |old_play|
-      old_play[:player] == player && old_play[:action] != 'swap'
-    end.empty?
-  end
 
 end

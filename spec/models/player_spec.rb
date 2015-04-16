@@ -1,21 +1,21 @@
 require 'rails_helper'
 
-RSpec.describe SheedhetPlayer, type: :model do
+RSpec.describe Player, type: :model do
   let(:hand_size) { 4 }
 
   let(:cards) do
-    SheedhetPlayer::PILES.inject({}) do |cards, target|
+    Player::PILES.inject({}) do |cards, target|
       cards[target] = Array.new(hand_size).map{ Card.random_card }
       cards
     end
   end
 
-  subject(:player) { SheedhetPlayer.new(cards: cards, position: 0) }
+  subject(:player) { Player.new(cards: cards, position: 0) }
 
   describe '#remove_from' do
     context 'card exists in target' do
       it 'removes the card' do
-        target = SheedhetPlayer::PILES.sample
+        target = Player::PILES.sample
         card = player.cards[target].sample
         result = player.remove_from(card: card, target: target)
         expect(result).to eq(card)
@@ -25,7 +25,7 @@ RSpec.describe SheedhetPlayer, type: :model do
 
     context 'card does not exist in target' do
       it 'should raise an error' do
-        target = SheedhetPlayer::PILES.sample
+        target = Player::PILES.sample
         begin
           card = Card.random_card
         end while player.cards[target].include? card
@@ -38,7 +38,7 @@ RSpec.describe SheedhetPlayer, type: :model do
 
   describe '#add_to' do
     it 'adds the card' do
-      target = SheedhetPlayer::PILES.sample
+      target = Player::PILES.sample
       begin
         card = Card.random_card
       end while player.cards[target].include? card
