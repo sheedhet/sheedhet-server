@@ -1,49 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe Player, type: :model do
-  let(:hand_size) { 4 }
-
-  let(:cards) do
-    Player::PILES.inject({}) do |cards, target|
-      cards[target] = Array.new(hand_size).map{ Card.random_card }
-      cards
-    end
-  end
-
-  subject(:player) { Player.new(cards: cards, position: 0) }
+  let!(:game) { GameFactory.new.build }
+  let!(:player) { game.players.sample }
+  let!(:target) { Player::PILES.sample }
+  let!(:card) { player.cards[target].sample }
+  subject(:cards) { player.cards[target] }
 
   describe '#remove_from' do
     context 'card exists in target' do
-      it 'removes the card' do
-        target = Player::PILES.sample
-        card = player.cards[target].sample
-        result = player.remove_from(card: card, target: target)
-        expect(result).to eq(card)
-        expect(player.cards[target]).not_to include(card)
-      end
+      let!(:removed) { player.remove_from(card: card, target: target) }
+      it { expect(removed).to be card }
+      it { is_expected.not_to include(card) }
     end
 
     context 'card does not exist in target' do
-      it 'should raise an error' do
-        target = Player::PILES.sample
-        begin
-          card = Card.random_card
-        end while player.cards[target].include? card
+      let!(:card) { Card.new(suit: 's', face: '0') }
+      it 'should raise error' do
         expect do
-          player.remove_from(card: card, target: targets.last)
+          player.remove_from(card: card, target: target)
         end.to raise_error
       end
     end
   end
 
   describe '#add_to' do
-    it 'adds the card' do
-      target = Player::PILES.sample
-      begin
-        card = Card.random_card
-      end while player.cards[target].include? card
-      result = player.add_to(card: card, target: target)
-      expect(player.cards[target]).to include card
-    end
+    let!(:card) { Card.new(suit: 's', face: '0') }
+    before { player.add_to(card: card, target: target) }
+    it {is_expected.to include card }
   end
 end
