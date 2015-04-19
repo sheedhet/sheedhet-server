@@ -1,8 +1,16 @@
 class Play
-  def initialize(player:, action:)
+  def initialize(action:, game:, position:)
     @action = action
     @game = game
-    @player = player
+    @position = position
+    @player = @game.players[position]
+  end
+
+  def as_json
+    { action: @action,
+      game: @game,
+      position: @position
+    }
   end
 
   def valid?
