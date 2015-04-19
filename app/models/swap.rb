@@ -5,6 +5,14 @@ class Swap < Play
     @to_in_hand = to_in_hand
   end
 
+  def as_json
+    super.merge{
+      { to_face_up: @to_face_up,
+        to_in_hand: @to_in_hand
+      }
+    }
+  end
+
   def valid?
     cards       = @player.cards
     from_play   = (@to_in_hand + @to_face_up).sort
