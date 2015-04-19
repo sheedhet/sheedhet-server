@@ -1,18 +1,16 @@
 class Player
-  attr_accessor :cards, :name, :position, :swap_done
+  attr_accessor :cards, :name, :position
 
   PILES = [:face_down, :face_up, :in_hand]
 
   def initialize(
     cards: { in_hand: [], face_up: [], face_down: [] },
     name: random_name,
-    position: 0,
-    swap_done: false
+    position: 0
   )
     @cards     = cards
     @name      = name
     @position  = position
-    @swap_done = swap_done
   end
 
   def ==(other_player)
@@ -29,7 +27,6 @@ class Player
     { name: @name,
       cards: @cards.as_json,
       position: @position,
-      swap_done: @swap_done
     }
   end
 
