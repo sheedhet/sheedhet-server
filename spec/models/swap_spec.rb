@@ -43,4 +43,8 @@ RSpec.describe Swap, type: :model do
       it { is_expected.to be false }
     end
   end
+
+  describe '#execute' do
+    # to do
+  end
 end
