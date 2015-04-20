@@ -6,7 +6,7 @@ class Swap < Play
   end
 
   def as_json
-    super.merge{
+    super.merge {
       { to_face_up: @to_face_up,
         to_in_hand: @to_in_hand
       }
@@ -28,7 +28,6 @@ class Swap < Play
   end
 
   def execute
-    super
     @player.cards[:in_hand] = @to_in_hand
     @player.cards[:face_up] = @to_face_up
     # @player.save
