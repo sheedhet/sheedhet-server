@@ -23,7 +23,6 @@ class GameFactory
       game.draw_pile = @game_cards
       game.hand_size = @hand_size
       game.players = @players
-      game.valid_plays = [{ action: 'swap', player: @players }]
     end
   end
 

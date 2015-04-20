@@ -12,6 +12,7 @@ class Game #< ActiveRecord::Base
     @draw_pile    = []
     @history      = []
     @play_pile    = []
+    @valid_plays  = []
   end
 
   def ==(other_game)
