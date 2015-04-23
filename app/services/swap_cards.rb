@@ -1,5 +1,7 @@
-class SwapCards < Play
-  def initialize(action: 'swap', game:, position:, to_face_up:, to_in_hand:)
+class SwapCards < Turn
+  ACTION = 'swap_cards'
+
+  def initialize(action: ACTION, game:, position:, to_face_up:, to_in_hand:)
     super(action: action, game: game, position: position)
     @to_face_up = to_face_up
     @to_in_hand = to_in_hand
@@ -19,7 +21,7 @@ class SwapCards < Play
     from_player = (cards[:in_hand] + cards[:face_up]).sort
     hand_size   = @game.hand_size
     valid = {
-      action: @action == 'swap',
+      action: @action == ACTION,
       cards: from_play == from_player,
       hasnt_played: hasnt_played_yet?,
       size: [@to_in_hand, @to_face_up].all? { |x| x.size == hand_size },
@@ -37,7 +39,7 @@ class SwapCards < Play
 
   def hasnt_played_yet?
     @game.history.select do |old_play|
-      old_play[:position] == @player.position && old_play[:action] != 'swap'
+      old_play[:position] == @player.position && old_play[:action] != ACTION
     end.empty?
   end
 
