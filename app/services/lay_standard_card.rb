@@ -1,4 +1,4 @@
-class Regular < Play
+class LayStandardCard < Turn
   VALID_FACES = ['a', '4', '5', '6', '9', 'j', 'q', 'k']
 
   def initialize(action: 'regular', game:, position:, card:, source:)
@@ -6,6 +6,7 @@ class Regular < Play
     @card = card
     @source = source
   end
+  special
 
   def as_json
     super.merge {

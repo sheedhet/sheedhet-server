@@ -1,4 +1,4 @@
-class Play
+class Turn
   def initialize(action:, game:, position:)
     @action = action
     @game = game
@@ -28,6 +28,6 @@ class Play
   end
 
   def execute
-    raise ArgumentError, 'Not a valid Play' unless valid?
+    raise ArgumentError, 'Not a valid Turn' unless valid?
   end
 end

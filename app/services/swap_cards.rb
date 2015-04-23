@@ -1,4 +1,4 @@
-class Swap < Play
+class SwapCards < Play
   def initialize(action: 'swap', game:, position:, to_face_up:, to_in_hand:)
     super(action: action, game: game, position: position)
     @to_face_up = to_face_up
