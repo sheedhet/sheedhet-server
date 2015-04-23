@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Swap, type: :model do
+RSpec.describe SwapCards do
   let!(:game) { GameFactory.new.build }
   let!(:player) { game.players.sample }
-  let!(:action) { 'swap' }
+  let!(:action) { 'swap_cards' }
   let!(:position) { player.position }
   let!(:to_in_hand) { player.cards[:face_up] }
   let!(:to_face_up) { player.cards[:in_hand] }
   let!(:swap) do
-    Swap.new(
+    SwapCards.new(
       action: action,
       game: game,
       position: position,

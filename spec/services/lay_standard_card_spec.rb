@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Regular, type: :model do
+RSpec.describe LayStandardCard do
   let!(:game) { GameFactory.new.build }
   let!(:player) { game.players.sample }
   let!(:action) { 'regular' }
@@ -8,7 +8,7 @@ RSpec.describe Regular, type: :model do
   let!(:source) { Player::PILES.sample }
   let!(:card) { player.cards[source].sample }
   let!(:regular) do
-    Regular.new(
+    LayStandardCard.new(
       action: action,
       game: game,
       position: position,

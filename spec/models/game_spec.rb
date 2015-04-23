@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-RSpec.describe Game, type: :model do
+RSpec.describe Game do
 end

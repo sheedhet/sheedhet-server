@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Player, type: :model do
+RSpec.describe Player do
   let!(:game) { GameFactory.new.build }
   let!(:player) { game.players.sample }
   let!(:target) { Player::PILES.sample }
