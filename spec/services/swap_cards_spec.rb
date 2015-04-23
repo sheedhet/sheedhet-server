@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SwapCards do
   let!(:game) { GameFactory.new.build }
   let!(:player) { game.players.sample }
-  let!(:action) { 'swap_cards' }
+  let!(:action) { SwapCards::ACTION }
   let!(:position) { player.position }
   let!(:to_in_hand) { player.cards[:face_up] }
   let!(:to_face_up) { player.cards[:in_hand] }
