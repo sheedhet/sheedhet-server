@@ -6,7 +6,6 @@ class LayStandardCard < Turn
     @card = card
     @source = source
   end
-  special
 
   def as_json
     super.merge {
