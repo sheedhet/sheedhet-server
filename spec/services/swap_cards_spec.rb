@@ -1,19 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe SwapCards do
-  let!(:game) { GameFactory.new.build }
-  let!(:player) { game.players.sample }
-  let!(:action) { SwapCards::ACTION }
-  let!(:position) { player.position }
-  let!(:to_in_hand) { player.cards[:face_up] }
-  let!(:to_face_up) { player.cards[:in_hand] }
-  let!(:swap) do
-    SwapCards.new(
+  let(:game) { GameFactory.new.build }
+  let(:player) { game.players.sample }
+  let(:action) { SwapCards::ACTION }
+  let(:position) { player.position }
+  let(:from_in_hand) { player.cards[:in_hand].sample(game.hand_size) }
+  let(:from_face_up) { player.cards[:face_up].sample(game.hand_size) }
+  let(:swap) do
+    Turn.build(
       action: action,
+      from_face_up: from_face_up,
+      from_in_hand: from_in_hand,
       game: game,
-      position: position,
-      to_in_hand: to_in_hand,
-      to_face_up: to_face_up
+      position: position
     )
   end
 
@@ -25,13 +25,13 @@ RSpec.describe SwapCards do
     end
 
     context 'given invalid cards,' do
-      let!(:to_in_hand) { player.cards[:in_hand] }
+      let(:from_in_hand) { player.cards[:face_down] }
       it { is_expected.to be false }
     end
 
     context 'given invalid action,' do
-      let!(:action) { 'invalid' }
-      it { is_expected.to be false }
+      let(:action) { 'invalid' }
+      it { expect { swap }.to raise_error }
     end
 
     context 'player has not played yet' do

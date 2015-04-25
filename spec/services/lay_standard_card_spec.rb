@@ -1,19 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe LayStandardCard do
-  let!(:game) { GameFactory.new.build }
-  let!(:player) { game.players.sample }
-  let!(:action) { 'regular' }
-  let!(:position) { player.position }
-  let!(:source) { Player::PILES.sample }
-  let!(:card) { player.cards[source].sample }
-  let!(:regular) do
-    LayStandardCard.new(
+  let(:game) { GameFactory.new.build }
+  let(:player) { game.players.sample }
+  let(:action) { LayStandardCard::ACTION }
+  let(:position) { player.position }
+  let(:from_in_hand) { player.cards[:in_hand].sample(2) }
+
+  let(:regular) do
+    Turn.build(
       action: action,
+      from_in_hand: from_in_hand,
       game: game,
-      position: position,
-      card: card,
-      source: source
+      position: position
     )
   end
 
