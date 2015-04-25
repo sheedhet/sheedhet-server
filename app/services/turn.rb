@@ -1,5 +1,5 @@
 class Turn
-  def initialize(
+  def self.build(
     action:,
     from_face_down: [],
     from_face_up: [],
@@ -7,14 +7,29 @@ class Turn
     game:,
     position:
   )
-    @action = action
-    @from_face_down = from_face_down
-    @from_face_up = from_face_up
-    @from_in_hand = from_in_hand
-    @game = game  # pull game from db
-    @position = position
-    @player = @game.players[position]
-    @action.camelize.constantize.new
+    klass = action.camelize.constantize
+    klass.new(
+      from_face_down: from_face_down,
+      from_face_up: from_face_up,
+      from_in_hand: from_in_hand,
+      game: game,
+      position: position
+    )
+  end
+
+  def initialize(
+    from_face_down: [],
+    from_face_up: [],
+    from_in_hand: [],
+    game:,
+    position:
+  )
+  @from_face_down = from_face_down
+  @from_face_up = from_face_up
+  @from_in_hand = from_in_hand
+  @game = game  # pull game from db
+  @position = position
+  @player = @game.players[position]
   end
 
   def ==(other_game)
