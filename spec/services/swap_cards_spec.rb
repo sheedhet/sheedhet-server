@@ -5,8 +5,8 @@ RSpec.describe SwapCards do
   let(:player) { game.players.sample }
   let(:action) { SwapCards::ACTION }
   let(:position) { player.position }
-  let(:from_in_hand) { player.cards[:in_hand].sample(game.hand_size) }
-  let(:from_face_up) { player.cards[:face_up].sample(game.hand_size) }
+  let(:from_in_hand) { player.cards[:in_hand].dup }
+  let(:from_face_up) { player.cards[:face_up].dup }
   let(:swap) do
     Turn.build(
       action: action,
@@ -45,6 +45,14 @@ RSpec.describe SwapCards do
   end
 
   describe '#execute' do
-    # to do
+    subject { player.cards }
+    let(:correct_result) do
+      { in_hand: from_face_up,
+        face_up: from_in_hand,
+        face_down: player.cards[:face_down]
+      }
+    end
+    before { swap.execute }
+    it { is_expected.to eq(correct_result)}
   end
 end
