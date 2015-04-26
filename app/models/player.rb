@@ -1,4 +1,6 @@
 class Player
+  include Equivalence
+
   attr_accessor :cards, :name, :position
 
   PILES = [:face_down, :face_up, :in_hand]
@@ -11,16 +13,6 @@ class Player
     @cards     = cards
     @name      = name
     @position  = position
-  end
-
-  def ==(other_player)
-    other_player.class == self.class && other_player.as_json == as_json
-  end
-
-  alias_method :eql?, :==
-
-  def hash
-    as_json.hash
   end
 
   def as_json

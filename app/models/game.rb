@@ -1,4 +1,6 @@
 class Game #< ActiveRecord::Base
+  include Equivalence
+
   attr_accessor :discard_pile,
                 :draw_pile,
                 :hand_size,
@@ -13,16 +15,6 @@ class Game #< ActiveRecord::Base
     @history      = []
     @play_pile    = []
     @valid_plays  = []
-  end
-
-  def ==(other_game)
-    other_game.class == self.class && other_game.as_json == as_json
-  end
-
-  alias_method :eql?, :==
-
-  def hash
-    as_json.hash
   end
 
   def game_state

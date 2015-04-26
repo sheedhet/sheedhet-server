@@ -1,4 +1,6 @@
 class Card
+  include Equivalence
+
   attr_reader :suit, :face
 
   SUITS = ['c', 'd', 'h', 's']
@@ -13,18 +15,8 @@ class Card
     @face = face
   end
 
-  def ==(other_card)
-    other_card.class == self.class && other_card.as_json == as_json
-  end
-
-  alias_method :eql?, :==
-
   def <=>(other_card)
     self.as_json <=> other_card.as_json
-  end
-
-  def hash
-    as_json.hash
   end
 
   def as_json
