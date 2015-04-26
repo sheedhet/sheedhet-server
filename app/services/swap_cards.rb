@@ -2,11 +2,7 @@ class SwapCards < Turn
   ACTION = 'swap_cards'
 
   def as_json
-    super.merge {
-      { from_face_up: @from_face_up,
-        from_in_hand: @from_in_hand
-      }
-    }
+    super.merge({ from_face_up: @from_face_up.as_json, from_in_hand: @from_in_hand.as_json })
   end
 
   def valid?
@@ -29,8 +25,9 @@ class SwapCards < Turn
       @player.add_to_face_up @player.remove_from_hand(card)
     end
     @from_face_up.each do |card|
-      @player.add_to_hand @player.removed_from_hand(card)
+      @player.add_to_hand @player.remove_from_face_up(card)
     end
+    true
     # @player.save
   end
 

@@ -43,9 +43,9 @@ class Turn
   end
 
   def as_json
-    { action: @action,
-      game: @game,
-      position: @position
+    { action: @action.as_json,
+      game: @game.as_json,
+      position: @position.as_json
     }
   end
 
