@@ -36,13 +36,16 @@ class Turn
 
   def as_json
     { action: @action.as_json,
+      from_face_down: @from_face_down.as_json,
+      from_face_up: @from_face_up.as_json,
+      from_in_hand: @from_in_hand.as_json,
       game: @game.as_json,
       position: @position.as_json
     }
   end
 
   def valid?
-    false
+    @game.valid_plays.include? self
   end
 
   def execute
