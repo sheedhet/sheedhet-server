@@ -1,23 +1,23 @@
 class SwapCards < Turn
   ACTION = 'swap_cards'
 
-  def as_json
-    super.merge({ from_face_up: @from_face_up.as_json, from_in_hand: @from_in_hand.as_json })
-  end
-
   def valid?
-    [valid_cards?, hasnt_played_yet?, valid_size? ].all?
-  end
-
-  def valid_size?
-    [@from_in_hand, @from_face_up].all? { |x| x.size == @game.hand_size }
+    valid_cards? && hasnt_played_yet?
   end
 
   def valid_cards?
     cards = @player.cards
-    from_turn   = (@from_in_hand + @from_face_up).sort
-    from_player = (cards[:in_hand] + cards[:face_up]).sort
-    from_turn == from_player
+    valid_face_up = cards[:face_up].select { |c| @from_face_up.include? c }
+    valid_in_hand = cards[:in_hand].select { |c| @from_in_hand.include? c }
+    matches_face_up = valid_face_up.sort == @from_face_up.sort
+    matches_in_hand = valid_in_hand.sort == @from_in_hand.sort
+    matches_face_up && matches_in_hand
+
+    # @from_in_hand.select? { |card| cards[:in_hand].include? card }
+    # @from_face_up.all? { |card| cards[:face_up].include? card }
+    # from_turn   = (@from_in_hand + @from_face_up).sort
+    # from_player = (cards[:in_hand] + cards[:face_up]).sort
+    # from_turn == from_player
   end
 
   def execute
@@ -30,8 +30,6 @@ class SwapCards < Turn
     true
     # @player.save
   end
-
-  protected
 
   def hasnt_played_yet?
     @game.history.select do |old_turn|

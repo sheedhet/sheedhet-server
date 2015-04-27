@@ -5,8 +5,8 @@ RSpec.describe SwapCards do
   let(:player) { game.players.sample }
   let(:action) { SwapCards::ACTION }
   let(:position) { player.position }
-  let(:from_in_hand) { player.cards[:in_hand].dup }
-  let(:from_face_up) { player.cards[:face_up].dup }
+  let(:from_in_hand) { player.cards[:in_hand].sample(game.hand_size - 1) }
+  let(:from_face_up) { player.cards[:face_up].sample(game.hand_size - 1) }
   let(:swap) do
     Turn.build(
       action: action,
@@ -45,14 +45,14 @@ RSpec.describe SwapCards do
   end
 
   describe '#execute' do
-    subject { player.cards }
-    let(:correct_result) do
-      { in_hand: from_face_up,
-        face_up: from_in_hand,
+    subject { player.cards.as_json }
+    let!(:correct_result) do
+      { in_hand: player.cards[:in_hand] - from_in_hand + from_face_up,
+        face_up: player.cards[:face_up] - from_face_up + from_in_hand,
         face_down: player.cards[:face_down]
       }
     end
     before { swap.execute }
-    it { is_expected.to eq(correct_result)}
+    it { is_expected.to eq(correct_result.as_json)}
   end
 end
