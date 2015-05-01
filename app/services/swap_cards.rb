@@ -7,27 +7,19 @@ class SwapCards < Turn
 
   def valid_cards?
     cards = @player.cards
-    valid_face_up = cards[:face_up].select { |c| @from_face_up.include? c }
-    valid_in_hand = cards[:in_hand].select { |c| @from_in_hand.include? c }
-    matches_face_up = valid_face_up.sort == @from_face_up.sort
-    matches_in_hand = valid_in_hand.sort == @from_in_hand.sort
-    matches_face_up && matches_in_hand
-
-    # @from_in_hand.select? { |card| cards[:in_hand].include? card }
-    # @from_face_up.all? { |card| cards[:face_up].include? card }
-    # from_turn   = (@from_in_hand + @from_face_up).sort
-    # from_player = (cards[:in_hand] + cards[:face_up]).sort
-    # from_turn == from_player
+    [:face_up, :in_hand].all? do |target|
+      valid = cards[target].select { |c| @play_cards[target].include? c }
+      valid.sort == @play_cards[target].sort
+    end
   end
 
   def execute
-    @from_in_hand.each do |card|
-      @player.add_to_face_up @player.remove_from_hand(card)
+    [:face_up, :in_hand].permutation(2) do |target_a, target_b|
+      @play_cards[target_a].each do |card|
+        removed_card = @player.remove_from(card: card, target: target_a)
+        @player.add_to(target: target_b, card: removed_card)
+      end
     end
-    @from_face_up.each do |card|
-      @player.add_to_hand @player.remove_from_face_up(card)
-    end
-    true
     # @player.save
   end
 
