@@ -20,19 +20,6 @@ RSpec.describe LayCards do
     )
   end
 
-  describe '#valid?' do
-    subject { lay_card.valid? }
-
-    context 'play is in valid_plays' do
-      before { game.valid_plays << lay_card.dup }
-      it { is_expected.to be true }
-    end
-
-    context 'play is not in valid_plays' do
-      it { is_expected.to be false }
-    end
-  end
-
   describe '#execute' do
     before { lay_card.execute }
     it { expect(player.cards[target]).to include random_card }

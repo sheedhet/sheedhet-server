@@ -52,8 +52,6 @@ RSpec.describe SwapCards do
       }
     end
     before do
-      puts "face_up: #{face_up.as_json}, in_hand: #{in_hand.as_json}"
-
       swap_cards.execute
     end
     it { is_expected.to eq(correct_result.as_json)}
