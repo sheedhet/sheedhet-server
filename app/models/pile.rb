@@ -1,12 +1,12 @@
 class Pile < Array
   def add(card)
-    @cards << card
+    self << card
     self
   end
 
   def remove(card)
-    index = @cards.index(card)
+    index = self.index(card)
     raise ArgumentError, "Card #{card.as_json} not found" if index.nil?
-    @cards.slice! index
+    self.slice! index
   end
 end
