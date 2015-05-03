@@ -6,7 +6,7 @@ class Player
   PILES = [:face_down, :face_up, :in_hand]
 
   def initialize(
-    cards: { in_hand: [], face_up: [], face_down: [] },
+    cards: { in_hand: Pile.new, face_up: Pile.new, face_down: Pile.new },
     name: random_name,
     position: 0
   )
@@ -20,36 +20,6 @@ class Player
       cards: @cards.as_json,
       position: @position,
     }
-  end
-
-  def remove_from_hand(card)
-    remove_from(card: card, target: :in_hand)
-  end
-
-  def remove_from_face_up(card)
-    remove_from(card: card, target: :face_up)
-  end
-
-  def remove_from_face_down(card)
-    remove_from(card: card, target: :face_down)
-  end
-
-  def add_to_hand(card)
-    add_to(card: card, target: :in_hand)
-  end
-
-  def add_to_face_up(card)
-    add_to(card: card, target: :face_up)
-  end
-
-  def remove_from(card:, target:)
-    location = cards[target].index(card)
-    raise ArgumentError, "Card not found at target" if location.nil?
-    cards[target].slice! location
-  end
-
-  def add_to(card:, target:)
-    cards[target] << card
   end
 
   def random_name

@@ -3,33 +3,25 @@ class Turn
 
   def self.build(
     action:,
-    from_face_down: [],
-    from_face_up: [],
-    from_in_hand: [],
     game:,
+    play_cards: Player::PILES.inject({}){ |hash, pile| hash.merge(pile => []) },
     position:
   )
     klass = action.camelize.constantize
     klass.new(
-      from_face_down: from_face_down,
-      from_face_up: from_face_up,
-      from_in_hand: from_in_hand,
       game: game,
+      play_cards: play_cards,
       position: position
     )
   end
 
   def initialize(
-    from_face_down: [],
-    from_face_up: [],
-    from_in_hand: [],
     game:,
+    play_cards:,
     position:
   )
-  @from_face_down = from_face_down
-  @from_face_up = from_face_up
-  @from_in_hand = from_in_hand
   @game = game  # pull game from db
+  @play_cards = play_cards
   @position = position
   @player = @game.players[position]
   end
@@ -37,12 +29,13 @@ class Turn
   def as_json
     { action: @action.as_json,
       game: @game.as_json,
+      play_cards: @play_cards.as_json,
       position: @position.as_json
     }
   end
 
   def valid?
-    false
+    @game.valid_plays.include? self
   end
 
   def execute
