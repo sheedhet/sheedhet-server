@@ -6,10 +6,9 @@ RSpec.describe LayCards do
   let(:action) { LayCards::ACTION }
   let(:position) { player.position }
   let(:target) { Player::PILES.sample }
-  let(:pile) { "from_#{target}".to_sym }
-  let(:played_cards) { Hash.new([]) }
+  let(:played_cards) { { in_hand: [], face_up: [], face_down: [] } }
   let(:random_card) { player.cards[target].sample }
-  before { played_cards[target] = [random_card] }
+  before { played_cards[target] << random_card }
 
   let(:lay_card) do
     Turn.build(
@@ -22,7 +21,7 @@ RSpec.describe LayCards do
 
   describe '#execute' do
     before { lay_card.execute }
-    it { expect(player.cards[target]).to include random_card }
-    it { expect(game.play_pile).not_to include random_card }
+    it { expect(player.cards[target]).not_to include random_card }
+    it { expect(game.play_pile.pop).to eq random_card }
   end
 end
