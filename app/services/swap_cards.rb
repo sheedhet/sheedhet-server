@@ -16,8 +16,7 @@ class SwapCards < Turn
   def execute
     [:face_up, :in_hand].permutation(2) do |target_a, target_b|
       @play_cards[target_a].each do |card|
-        removed_card = @player.remove_from(card: card, target: target_a)
-        @player.add_to(target: target_b, card: removed_card)
+        @player.cards[target_b].add @player.cards[target_a].remove(card)
       end
     end
     # @player.save

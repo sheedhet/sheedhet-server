@@ -10,10 +10,10 @@ class Game #< ActiveRecord::Base
                 :valid_plays
 
   def initialize
-    @discard_pile = []
-    @draw_pile    = []
+    @discard_pile = Pile.new
+    @draw_pile    = Pile.new
     @history      = []
-    @play_pile    = []
+    @play_pile    = Pile.new
     @valid_plays  = []
   end
 

@@ -1,6 +1,7 @@
 class Pile < Array
   def add(card)
     @cards << card
+    self
   end
 
   def remove(card)
