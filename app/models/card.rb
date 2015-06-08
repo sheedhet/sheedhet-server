@@ -19,6 +19,11 @@ class Card
     new(face: FACES.sample, suit: SUITS.sample)
   end
 
+  def self.from_json(json_string)
+    suit = json_string.slice!(-1)
+    new(suit: suit, face: json_string)
+  end
+
   def initialize(suit: 's', face: 'a')
     @suit = suit
     @face = face
@@ -29,6 +34,10 @@ class Card
     raise ArgumentError, "Can't compare Card to non-Card" unless is_card
     [value, face, suit] <=> [other_card.value, other_card.face, other_card.suit]
   end
+
+  # def equivalent(other_card)
+  #
+  # end
 
   def value
     VALUES[face] || face.to_i
