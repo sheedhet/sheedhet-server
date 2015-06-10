@@ -7,13 +7,6 @@ class FindValidTurns
     @game = game
   end
 
-
-  def find_starter
-    @game.players.map do |player|
-      player.get_starter
-    end.min
-  end
-
   def next_play_value
     valid_turns << @game.started? ? find_next_value : find_starter.value
   end
