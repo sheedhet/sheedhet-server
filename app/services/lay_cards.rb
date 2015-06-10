@@ -1,5 +1,5 @@
 class LayCards < Turn
-  ACTION = 'lay_cards'
+  ACTION = :lay_cards
   VALID_FACES = ['a', '4', '5', '6', '9', 'j', 'q', 'k']
 
   def execute

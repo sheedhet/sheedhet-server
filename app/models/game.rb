@@ -7,14 +7,14 @@ class Game #< ActiveRecord::Base
                 :history,
                 :players,
                 :play_pile,
-                :valid_plays
+                :valid_turns
 
   def initialize
     @discard_pile = Pile.new
     @draw_pile    = Pile.new
-    @history      = []
+    @history      = []    # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
     @play_pile    = Pile.new
-    @valid_plays  = []
+    @valid_turns  = []
   end
 
   def game_state
@@ -23,8 +23,14 @@ class Game #< ActiveRecord::Base
       hand_size: hand_size,
       players: players,
       play_pile: play_pile,
-      valid_plays: valid_plays
+      valid_turns: valid_turns
     }
+  end
+
+  def started?
+    max_possible_swaps = players.size
+    return true if history.size > max_possible_swaps
+    history.any? { |turn| turn.class == LayCards }
   end
 
   def as_json
@@ -33,11 +39,11 @@ class Game #< ActiveRecord::Base
 
   # def find_initial_plays
   #   start_value = 4
-  #   while valid_plays.empty?
+  #   while valid_turns.empty?
   #     players.each do |player|
   #       valid = player.cards[:in_hand].select{|card| card.face == start_value.to_s}
   #       valid.each do |card|
-  #         @valid_plays << { player: player, card: card }
+  #         @valid_turns << { player: player, card: card }
   #       end
   #     end
   #     start_value += 1

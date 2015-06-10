@@ -3,10 +3,14 @@ class Player
 
   attr_accessor :cards, :name, :position
 
-  PILES = [:face_down, :face_up, :in_hand]
+  PILES = [:in_hand, :face_up, :face_down]
+
+  def self.new_hand(existing = {})
+    PILES.map { |pile| [pile, Pile.new] }.to_h.merge!(existing)
+  end
 
   def initialize(
-    cards: { in_hand: Pile.new, face_up: Pile.new, face_down: Pile.new },
+    cards: self.class.new_hand,
     name: random_name,
     position: 0
   )
@@ -17,9 +21,28 @@ class Player
 
   def as_json
     { name: @name,
-      cards: @cards.as_json,
       position: @position,
+      cards: @cards.as_json,
     }
+  end
+
+  def get_starter
+    cards[:in_hand].min
+  end
+
+  def get_playable_from(operator:, value:, from_piles: PILES.each)
+    pile = from_piles.next
+    result = {}
+    result[pile] = cards[pile].get(operator, value)
+    empties_pile = result[pile].size == cards[pile].size
+    if pile.empty? || (empties_pile && result[pile].all_same?)
+      result.merge! get_playable_from(
+        from_piles: from_piles,
+        operator: operator,
+        value: value
+      )
+    end
+    result
   end
 
   def random_name

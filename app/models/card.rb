@@ -5,9 +5,23 @@ class Card
 
   SUITS = ['c', 'd', 'h', 's']
   FACES = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k' ]
+  VALUES = {
+    'j' => 11,
+    'q' => 12,
+    'k' => 13,
+    'a' => 14,
+    '2' => 15,
+    '3' => 15,
+    '10' => 15
+   }
 
   def self.random_card
     new(face: FACES.sample, suit: SUITS.sample)
+  end
+
+  def self.from_json(json_string)
+    suit = json_string.slice!(-1)
+    new(suit: suit, face: json_string)
   end
 
   def initialize(suit: 's', face: 'a')
@@ -16,7 +30,17 @@ class Card
   end
 
   def <=>(other_card)
-    self.as_json <=> other_card.as_json
+    is_card = other_card.class == Card
+    raise ArgumentError, "Can't compare Card to non-Card" unless is_card
+    [value, face, suit] <=> [other_card.value, other_card.face, other_card.suit]
+  end
+
+  # def equivalent(other_card)
+  #
+  # end
+
+  def value
+    VALUES[face] || face.to_i
   end
 
   def as_json
