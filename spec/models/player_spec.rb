@@ -7,13 +7,13 @@ RSpec.describe Player do
   let(:player) { Player.new }
 
 
-  describe '#get_playable_from' do
+  describe '#get_playable' do
     context 'getting values greater than/equal to' do
       before do
         player.cards = simple_hand
       end
 
-      subject { player.get_playable_from(operator: :>=, value: 6) }
+      subject { player.get_playable(operator: :>=, value: 6) }
 
       it "returns only cards with values greater than or equal to" do
         expect(subject[:in_hand].count{ |card| card.value < 6 }).to eq(0)

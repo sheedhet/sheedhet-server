@@ -30,13 +30,13 @@ class Player
     cards[:in_hand].min
   end
 
-  def get_playable_from(operator:, value:, from_piles: PILES.each)
+  def get_playable(operator:, value:, from_piles: PILES.each)
     pile = from_piles.next
     result = {}
     result[pile] = cards[pile].get(operator, value)
     empties_pile = result[pile].size == cards[pile].size
     if pile.empty? || (empties_pile && result[pile].all_same?)
-      result.merge! get_playable_from(
+      result.merge! get_playable(
         from_piles: from_piles,
         operator: operator,
         value: value

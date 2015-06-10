@@ -36,7 +36,7 @@ class FindValidTurns
 
   # def find_starter_turns
   #   @game.players.map do |player|
-  #     starters = player.get_playable_from(
+  #     starters = player.get_playable(
   #       operator: :==,
   #       value: find_starter.value
   #     )
