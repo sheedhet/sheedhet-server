@@ -34,7 +34,7 @@ class GameFactory
   def deal_everyone(target)
     @hand_size.times do
       @players.each do |player|
-        player.cards[target] << @game_cards.pop
+        player.cards[target].add @game_cards.pop
       end
     end
   end
