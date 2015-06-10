@@ -1,14 +1,17 @@
 class Turn
   include Equivalence
 
+  attr_reader :position
+
   def self.build(
     action:,
     game:,
     play_cards: Player::PILES.inject({}){ |hash, pile| hash.merge(pile => []) },
     position:
   )
-    klass = action.camelize.constantize
+    klass = action.to_s.camelize.constantize
     klass.new(
+      action: action,
       game: game,
       play_cards: play_cards,
       position: position
@@ -16,10 +19,12 @@ class Turn
   end
 
   def initialize(
+    action:,
     game:,
     play_cards:,
     position:
   )
+  @action = action
   @game = game  # pull game from db
   @play_cards = play_cards
   @position = position
