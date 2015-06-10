@@ -1,5 +1,5 @@
 class SwapCards < Turn
-  ACTION = 'swap_cards'
+  ACTION = :swap_cards
 
   def valid?
     valid_cards? && hasnt_played_yet?
