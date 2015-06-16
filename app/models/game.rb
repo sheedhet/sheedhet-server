@@ -1,5 +1,5 @@
 class Game #< ActiveRecord::Base
-  include Equivalence
+  include JsonEquivalence
 
   attr_accessor :discard_pile,
                 :draw_pile,

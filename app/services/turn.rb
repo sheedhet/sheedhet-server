@@ -1,5 +1,5 @@
 class Turn
-  include Equivalence
+  include JsonEquivalence
 
   attr_reader :position
 

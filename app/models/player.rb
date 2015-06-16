@@ -1,5 +1,5 @@
 class Player
-  include Equivalence
+  include JsonEquivalence
 
   attr_accessor :cards, :name, :position
 

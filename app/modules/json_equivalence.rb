@@ -1,4 +1,4 @@
-module Equivalence
+module JsonEquivalence
   def ==(other)
     other.class == self.class && other.as_json == as_json
   end

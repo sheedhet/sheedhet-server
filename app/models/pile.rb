@@ -1,8 +1,8 @@
 class Pile < Array
-  include Equivalence
+  include JsonEquivalence
 
   def self.from_json(json_pile)
-    Pile.new json_pile.map { |card| Card.from_json(card) }
+    new(json_pile.map { |card| Card.from_json(card) })
   end
 
   def add(card)

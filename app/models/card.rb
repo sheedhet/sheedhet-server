@@ -1,5 +1,5 @@
 class Card
-  include Equivalence
+  include JsonEquivalence
 
   attr_reader :suit, :face
 
