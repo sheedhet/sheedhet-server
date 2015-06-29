@@ -5,8 +5,8 @@ RSpec.describe LayCards do
   let(:player) { game.players.sample }
   let(:action) { LayCards::ACTION }
   let(:position) { player.position }
-  let(:target) { Player::PILES.sample }
-  let(:played_cards) { { in_hand: [], face_up: [], face_down: [] } }
+  let(:target) { player.cards.keys.sample }
+  let(:played_cards) { Hand.new }
   let(:random_card) { player.cards[target].sample }
   before { played_cards[target] << random_card }
 
@@ -21,7 +21,11 @@ RSpec.describe LayCards do
 
   describe '#execute' do
     before { lay_card.execute }
-    it { expect(player.cards[target]).not_to include random_card }
+    it {
+      require 'pry'
+      binding.pry
+      expect(player.cards[target]).not_to include random_card
+    }
     it { expect(game.play_pile.pop).to eq random_card }
   end
 end

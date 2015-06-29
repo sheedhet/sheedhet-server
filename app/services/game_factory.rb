@@ -28,12 +28,14 @@ class GameFactory
 
   def deal_new_game
     @game_cards.shuffle!
-    Player::PILES.each{ |target| deal_everyone(target) }
+    Hand::PILES.each{ |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)
     @hand_size.times do
       @players.each do |player|
+        require 'pry'
+        binding.pry
         player.cards[target].add @game_cards.pop
       end
     end

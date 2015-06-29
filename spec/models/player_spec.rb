@@ -2,17 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Player do
   let(:simple_hand) do
-    Player.new_hand({ in_hand: Pile.from_json(['4h', '5h', '6h', '7h', '8h']) })
+    Hand.new({ in_hand: Pile.from_json(['4h', '5h', '6h', '7h', '8h']) })
   end
-  let(:player) { Player.new }
+  let(:player) { Player.new(cards: simple_hand) }
 
-
+  # before { require 'pry'; binding.pry }
   describe '#get_playable' do
     context 'getting values greater than/equal to' do
-      before do
-        player.cards = simple_hand
-      end
-
       subject { player.get_playable(operator: :>=, value: 6) }
 
       it "returns only cards with values greater than or equal to" do

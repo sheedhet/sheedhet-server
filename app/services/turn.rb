@@ -6,7 +6,7 @@ class Turn
   def self.build(
     action:,
     game:,
-    play_cards: Player::PILES.inject({}){ |hash, pile| hash.merge(pile => []) },
+    play_cards: Hand.new,
     position:
   )
     klass = action.to_s.camelize.constantize

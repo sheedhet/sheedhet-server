@@ -1,6 +1,6 @@
 class GameStarter
   def self.start(game)
-    self.new(game)
+    new(game)
   end
 
   def initialize(game)
@@ -14,14 +14,9 @@ class GameStarter
     end.min
   end
 
-  def playable_cards_for(player)
-    player.get_playable(operator: :>=, value: find_starter.value)
-  end
-
   def create_starter_turns
-    starter_turns = @game.players.inject([]) do |results,player|
-      results << TurnFactory.for(playable_cards_for(player))
+    @game.players.inject([]) do |results, player|
+      results << TurnFactory.for(player: player, operator: :>=, game: @game)
     end
-    @game.valid_turns << starter_turns.compact
   end
 end

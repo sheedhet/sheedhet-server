@@ -3,14 +3,8 @@ class Player
 
   attr_accessor :cards, :name, :position
 
-  PILES = [:in_hand, :face_up, :face_down]
-
-  def self.new_hand(existing = {})
-    PILES.map { |pile| [pile, Pile.new] }.to_h.merge!(existing)
-  end
-
   def initialize(
-    cards: self.class.new_hand,
+    cards: Hand.new,
     name: random_name,
     position: 0
   )
@@ -26,23 +20,12 @@ class Player
     }
   end
 
-  def get_starter
-    cards[:in_hand].min
+  def get_playable(operator:, value:)
+    cards.get_playable(operator: operator, value: value)
   end
 
-  def get_playable(operator:, value:, from_piles: PILES.each)
-    pile = from_piles.next
-    result = {}
-    result[pile] = cards[pile].get(operator, value)
-    empties_pile = result[pile].size == cards[pile].size
-    if pile.empty? || (empties_pile && result[pile].all_same?)
-      result.merge! get_playable(
-        from_piles: from_piles,
-        operator: operator,
-        value: value
-      )
-    end
-    result
+  def get_starter
+    cards[:in_hand].min
   end
 
   def random_name

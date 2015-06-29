@@ -2,7 +2,7 @@ class Pile < Array
   include JsonEquivalence
 
   def self.from_json(json_pile)
-    new(json_pile.map { |card| Card.from_json(card) })
+    Pile.new(json_pile.map { |card| Card.from_json(card) })
   end
 
   def add(card)
@@ -37,7 +37,15 @@ class Pile < Array
   end
 
   def get(operator, value)
-    return Pile.new unless [:==, :>=, :<=].include? operator
+    return new unless [:==, :>=, :<=].include? operator
     Pile.new self.select { |card| card.value.public_send(operator, value) }
   end
+
+  def get_all(face)
+    Pile.new self.select { |card| card.face == face }
+  end
+
+  # def uniq_face
+  #   new self.uniq(&:face)
+  # end
 end
