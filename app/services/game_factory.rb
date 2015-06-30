@@ -1,5 +1,6 @@
+# Service responsible for creating games
+#
 class GameFactory
-
   def initialize(hand_size: 4, num_decks: 1, num_players: 3, state: {})
     @state = state
     @hand_size = hand_size
@@ -12,7 +13,7 @@ class GameFactory
   end
 
   def reconstitute_from_state
-    raise "You haven't written reconstitute_from_state yet"
+    fail "You haven't written reconstitute_from_state yet"
   end
 
   def create_new_game
@@ -28,14 +29,14 @@ class GameFactory
 
   def deal_new_game
     @game_cards.shuffle!
-    Hand::PILES.each{ |target| deal_everyone(target) }
+    Hand::PILES.each { |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)
     @hand_size.times do
       @players.each do |player|
-        require 'pry'
-        binding.pry
+        # require 'pry'
+        # binding.pry
         player.cards[target].add @game_cards.pop
       end
     end
@@ -45,7 +46,6 @@ class GameFactory
     create_deck * @num_decks
   end
 
-
   def create_deck
     Card::SUITS.product(Card::FACES).map do |suit, face|
       Card.new(suit: suit, face: face)
@@ -54,9 +54,8 @@ class GameFactory
 
   def create_players(existing_players: [])
     Array.new(@num_players) do |i|
-      player_to_add = existing_players.fetch i, { position: i }
+      player_to_add = existing_players.fetch i, position: i
       Player.new(player_to_add)
     end
   end
-
 end
