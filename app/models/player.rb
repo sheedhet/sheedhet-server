@@ -16,7 +16,7 @@ class Player
   def as_json
     { name: @name,
       position: @position,
-      cards: @cards.as_json,
+      cards: @cards.as_json
     }
   end
 
