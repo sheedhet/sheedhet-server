@@ -1,3 +1,5 @@
+# service responsible for handling the beginning of a game
+#
 class GameStarter
   def self.start(game)
     new(game)
@@ -9,9 +11,7 @@ class GameStarter
   end
 
   def find_starter
-    @game.players.map do |player|
-      player.get_starter
-    end.min
+    @game.players.map(&:lowest_card).min
   end
 
   def create_starter_turns
