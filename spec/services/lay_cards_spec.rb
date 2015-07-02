@@ -21,11 +21,7 @@ RSpec.describe LayCards do
 
   describe '#execute' do
     before { lay_card.execute }
-    it {
-      require 'pry'
-      binding.pry
-      expect(player.cards[target]).not_to include random_card
-    }
+    it { expect(player.cards[target]).not_to include random_card }
     it { expect(game.play_pile.pop).to eq random_card }
   end
 end
