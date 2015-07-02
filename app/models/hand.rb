@@ -10,16 +10,16 @@ class Hand < Hash
     merge!(empty_hand.merge existing)
   end
 
-  def get_playable(operator:, value:, from_piles: keys.each)
-    pile = from_piles.next
-    result = Hand.new
-    result[pile] = self[pile].get(operator, value)
-    empties_pile = result[pile].size == self[pile].size
-    if pile.empty? || (empties_pile && result[pile].all_same?)
-      result.merge! get_playable(
-        from_piles: from_piles,
-        operator: operator,
-        value: value)
+  def get_playable(operator:, value:)
+    all_by_operator = inject(Hand.new) do |response, (name, next_pile)|
+      response.merge "#{name}": next_pile.get(operator, value)
+    end
+    all_by_operator.trim_unplayable
+  end
+
+  def trim_unplayable
+    each do |(pile_name, pile)|
+
     end
   end
 
