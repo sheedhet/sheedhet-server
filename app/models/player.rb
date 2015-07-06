@@ -32,25 +32,25 @@ class Player
 
   def random_name  # rubocop:disable Metrics/MethodLength
     %w(
-      Ted,
-      Bill,
-      Jim,
-      Sal,
-      Ben,
-      Tim,
-      Jon,
-      Sam,
-      Ken,
-      George,
-      Jill,
-      Sally,
-      Betty,
-      Karen,
-      Jen,
-      Sara,
-      Cindy,
-      Mel,
-      Mandy,
+      Ted
+      Bill
+      Jim
+      Sal
+      Ben
+      Tim
+      Jon
+      Sam
+      Ken
+      George
+      Jill
+      Sally
+      Betty
+      Karen
+      Jen
+      Sara
+      Cindy
+      Mel
+      Mandy
       Laura
     ).sample
   end
