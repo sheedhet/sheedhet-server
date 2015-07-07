@@ -1,6 +1,7 @@
+# service to find all valid plays for the existing game state
 class FindValidTurns
   def self.for(game)
-    self.new(game)
+    new(game)
   end
 
   def initialize(game)
@@ -11,14 +12,14 @@ class FindValidTurns
     valid_turns << @game.started? ? find_next_value : find_starter.value
   end
 
-  def last_card_played  # move to Game class
+  def last_card_played
     @last_card_played ||= @game.play_pile.last
   end
 
   def find_next_value
     last_played = last_card_played
     case last_played.face
-    when ['4', '5', '6', '7', '8', '9', 'j', 'q', 'k', 'a']
+    when %w(4 5 6 7 8 9 j q k a)
       last_played.value
     when '2'
       4
@@ -48,7 +49,7 @@ class FindValidTurns
   # end
 
   # def previous_play
-  #   @previous_play ||= @game.history.reverse.find { |turn| turn.is_a? LayCards }
+  # @previous_play ||= @game.history.reverse.find { |turn| turn.is_a? LayCards }
   # end
   #
 

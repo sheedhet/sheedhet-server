@@ -1,6 +1,7 @@
+# service determines who can start and with which cards?
 class FindStarters
   def self.for(game)
-    self.new(game)
+    new(game)
   end
 
   def initialize(game)
@@ -14,5 +15,4 @@ class FindStarters
   def players_who_can_start
     @game.players.select { |player| player }
   end
-
 end
