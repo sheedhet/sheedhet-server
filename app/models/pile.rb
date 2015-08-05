@@ -2,14 +2,20 @@
 #
 class Pile
   include JsonEquivalence
-  # attr_reader :data
+  extend Forwardable
+
+  delegate [
+    :+, :-, :count, :each, :include?, :pop, :sample, :select, :size, :sort
+  ] => :@data
 
   def self.from_json(json_pile, content = Card)
     new(json_pile.map { |json| content.from_json(json) })
   end
 
   def initialize(existing = [], content = Card)
-    @data = Array.new existing.map { |object| content.from_json object }
+    content_matches = existing.all? { |obj| obj.is_a? content }
+    fail ArgumentError, 'Incorrect content class' unless content_matches
+    @data = existing
   end
 
   def as_json
