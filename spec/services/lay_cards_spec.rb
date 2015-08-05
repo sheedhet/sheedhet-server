@@ -8,7 +8,7 @@ RSpec.describe LayCards do
   let(:target) { player.cards.keys.sample }
   let(:played_cards) { Hand.new }
   let(:random_card) { player.cards[target].sample }
-  before { played_cards[target] << random_card }
+  before { played_cards[target].add random_card }
 
   let(:lay_card) do
     Turn.build(
