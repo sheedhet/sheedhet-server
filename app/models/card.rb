@@ -1,10 +1,12 @@
+# representation of a card in game
+#
 class Card
   include JsonEquivalence
 
   attr_reader :suit, :face
 
-  SUITS = ['c', 'd', 'h', 's']
-  FACES = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k' ]
+  SUITS = %w(c d h s)
+  FACES = %w(a 2 3 4 5 6 7 8 9 10 j q k)
   VALUES = {
     'j' => 11,
     'q' => 12,
@@ -13,7 +15,7 @@ class Card
     '2' => 15,
     '3' => 15,
     '10' => 15
-   }
+  }
 
   def self.random_card
     new(face: FACES.sample, suit: SUITS.sample)
@@ -24,20 +26,20 @@ class Card
     new(suit: suit, face: json_string)
   end
 
-  def initialize(suit: 's', face: 'a')
+  def initialize(suit: SUITS.sample, face: FACES.sample)
     @suit = suit
     @face = face
   end
 
-  def <=>(other_card)
-    is_card = other_card.class == Card
-    raise ArgumentError, "Can't compare Card to non-Card" unless is_card
-    [value, face, suit] <=> [other_card.value, other_card.face, other_card.suit]
+  def <=>(other)
+    is_card = other.class == Card
+    fail ArgumentError, "Can't compare Card to non-Card" unless is_card
+    [value, face, suit] <=> [other.value, other.face, other.suit]
   end
 
-  # def equivalent(other_card)
-  #
-  # end
+  def inspect
+    "Card:#{as_json}"
+  end
 
   def value
     VALUES[face] || face.to_i
