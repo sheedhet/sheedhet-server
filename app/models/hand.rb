@@ -3,7 +3,7 @@
 class Hand < Hash
   include JsonEquivalence
 
-  PILES = [:in_hand, :face_up, :face_down]
+  PILES = %i(in_hand face_up face_down)
 
   # def self.from_json(json_hand)
   # json_hand.each do ||
@@ -12,7 +12,7 @@ class Hand < Hash
 
   def initialize(existing = {}, storage_type = Pile, pile_names = PILES)
     empty_hand = pile_names.map { |pile| [pile, storage_type.new] }.to_h
-    merge!(empty_hand.merge existing)
+    merge! empty_hand.merge existing
   end
 
   def get_playable(operator:, value:)
