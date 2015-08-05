@@ -5,6 +5,29 @@ class Player
 
   attr_accessor :cards, :name, :position
 
+  PLAYER_NAMES = %w(
+    Ted
+    Bill
+    Jim
+    Sal
+    Ben
+    Tim
+    Jon
+    Sam
+    Ken
+    George
+    Jill
+    Sally
+    Betty
+    Karen
+    Jen
+    Sara
+    Cindy
+    Mel
+    Mandy
+    Laura
+  )
+
   def initialize(
     cards: Hand.new,
     name: random_name,
@@ -30,28 +53,7 @@ class Player
     cards[:in_hand].min
   end
 
-  def random_name  # rubocop:disable Metrics/MethodLength
-    %w(
-      Ted
-      Bill
-      Jim
-      Sal
-      Ben
-      Tim
-      Jon
-      Sam
-      Ken
-      George
-      Jill
-      Sally
-      Betty
-      Karen
-      Jen
-      Sara
-      Cindy
-      Mel
-      Mandy
-      Laura
-    ).sample
+  def random_name
+    PLAYER_NAMES.sample
   end
 end
