@@ -27,6 +27,8 @@ class Card
   end
 
   def initialize(suit: SUITS.sample, face: FACES.sample)
+    fail ArgumentError, "Invalid suit: #{suit}" unless SUITS.include?(suit)
+    fail ArgumentError, "Invalid face: #{face}" unless FACES.include?(face)
     @suit = suit
     @face = face
   end
@@ -37,9 +39,9 @@ class Card
     [value, face, suit] <=> [other.value, other.face, other.suit]
   end
 
-  def inspect
-    "Card:#{as_json}"
-  end
+  # def inspect
+  #   "Card:#{as_json}"
+  # end
 
   def value
     VALUES[face] || face.to_i
