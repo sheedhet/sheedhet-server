@@ -50,7 +50,7 @@ class Player
   end
 
   def lowest_card
-    cards[:in_hand].min
+    cards.lowest_card
   end
 
   def random_name
