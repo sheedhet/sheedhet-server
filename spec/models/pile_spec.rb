@@ -1,28 +1,31 @@
 require 'rails_helper'
 
 RSpec.describe Pile do
-  let(:pile_size) { 3 }
-  let(:random_json_pile) { Array.new(pile_size) { Card.random_card.as_json } }
-  let(:pile) { Pile.from_json random_json_pile }
-  let(:in_pile) { pile.sample }
-  let(:not_in_pile) { Card.new(face: '0', suit: 'h') }
-  subject { pile.as_json }
+  let(:empty_pile) { [] }
+  let(:card) { double(Card) }
+  let(:pile_with_card) { empty_pile.push(card) }
+  subject(:pile) { Pile.new(existing, card.class) }
 
   describe '#add' do
-    before { pile.add not_in_pile }
-    it { is_expected.to include not_in_pile.as_json }
-    it { expect(pile.size).to eq pile_size.next }
+    context 'adding a card' do
+      let(:existing) { empty_pile }
+      before { pile.add card }
+      it { is_expected.to include card }
+      it { expect(pile.size).to eq 1 }
+    end
   end
 
   describe '#remove' do
     context 'card is in pile' do
-      before { pile.remove in_pile }
-      it { is_expected.not_to include in_pile.as_json }
-      it { expect(pile.size).to eq pile_size.pred }
+      let(:existing) { pile_with_card }
+      before { pile.remove card }
+      it { is_expected.not_to include card }
+      it { expect(pile.size).to eq 0 }
     end
 
     context 'card not in pile' do
-      it { expect { pile.remove not_in_pile }.to raise_error }
+      let(:existing) { empty_pile }
+      it { expect { pile.remove card }.to raise_error }
     end
   end
 end
