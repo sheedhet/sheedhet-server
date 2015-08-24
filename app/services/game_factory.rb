@@ -29,7 +29,7 @@ class GameFactory
 
   def deal_new_game
     @game_cards.shuffle!
-    Hand::PILES.each { |target| deal_everyone(target) }
+    Hand::PILE_NAMES.each { |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)
