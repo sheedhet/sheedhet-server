@@ -1,11 +1,10 @@
 source 'https://rubygems.org'
 
-
 gem 'rails', '~>4.2.0'
 
 gem 'rails-api'
 
-gem 'spring', :group => :development
+gem 'spring', group: :development
 
 gem 'puma'
 
@@ -20,10 +19,10 @@ gem 'pry'
 gem 'pry-rails'
 
 # group :development, :test do
-  gem 'rspec-rails'
+gem 'rspec-rails'
 # end
-
-
+gem 'rails_best_practices', require: false
+gem 'rubycritic', require: false
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
