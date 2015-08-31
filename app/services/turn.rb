@@ -32,7 +32,7 @@ class Turn
   end
 
   def valid?
-    @game.valid_plays.include? self
+    @game.valid_turns.include? self
   end
 
   def execute
