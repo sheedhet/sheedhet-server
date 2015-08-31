@@ -1,3 +1,4 @@
+# describes a turn to swap cards
 class SwapCards < Turn
   ACTION = :swap_cards
 
@@ -8,8 +9,7 @@ class SwapCards < Turn
   def valid_cards?
     cards = @player.cards
     [:face_up, :in_hand].all? do |target|
-      valid = cards[target].select { |c| @play_cards[target].include? c }
-      valid.sort == @play_cards[target].sort
+      cards[target].contains? @play_cards[target]
     end
   end
 
@@ -22,10 +22,9 @@ class SwapCards < Turn
     # @player.save
   end
 
-  def hasnt_played_yet?
-    @game.history.select do |old_turn|
-      old_turn[:position] == @player.position && old_turn[:action] != ACTION
-    end.empty?
-  end
+  private
 
+  def hasnt_played_yet?
+    !@game.player_has_played? @player
+  end
 end
