@@ -1,4 +1,7 @@
-class Game #< ActiveRecord::Base
+# class that represents a game of sheedhet, encapsulates an entire game for
+# storage in database
+#
+class Game # < ActiveRecord::Base
   include JsonEquivalence
 
   attr_accessor :discard_pile,
@@ -9,12 +12,16 @@ class Game #< ActiveRecord::Base
                 :play_pile,
                 :valid_turns
 
-  def initialize
-    @discard_pile = Pile.new
-    @draw_pile    = Pile.new
+  def initialize(collection_type = Pile)
+    @discard_pile = collection_type.new
+    @draw_pile    = collection_type.new
     @history      = []    # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
-    @play_pile    = Pile.new
+    @play_pile    = collection_type.new
     @valid_turns  = []
+  end
+
+  def as_json
+    game_state.as_json
   end
 
   def game_state
@@ -30,32 +37,12 @@ class Game #< ActiveRecord::Base
   def started?
     max_possible_swaps = players.size
     return true if history.size > max_possible_swaps
-    history.any? { |turn| turn.class == LayCards }
+    history.any? { |turn| turn.is_a? LayCards }
   end
 
-  def as_json
-    game_state.as_json
+  def player_has_played?(player)
+    history.find do |turn|
+      turn.position == player.position && turn.is_a?(LayCards)
+    end.present?
   end
-
-  # def find_initial_plays
-  #   start_value = 4
-  #   while valid_turns.empty?
-  #     players.each do |player|
-  #       valid = player.cards[:in_hand].select{|card| card.face == start_value.to_s}
-  #       valid.each do |card|
-  #         @valid_turns << { player: player, card: card }
-  #       end
-  #     end
-  #     start_value += 1
-  #   end
-  # end
-
-  # def valid_play?(play_request)
-  #   # do a comparison of valid turns somehow
-  #   play_request[:action] == 'swap' &&
-  #     hasnt_played_yet?(play_request[:player]) &&
-  #     valid_swap?
-  # end
-
-
 end
