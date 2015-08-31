@@ -4,9 +4,12 @@ class Pile
   include JsonEquivalence
   extend Forwardable
 
-  delegate [
-    :+, :-, :count, :each, :include?, :pop, :sample, :select, :size, :sort
-  ] => :@data
+  DELEGATE_ARRAY_METHODS = %i(
+    all? count include? pop sample size + - each select sort rindex first last
+    to_set
+  )
+
+  delegate DELEGATE_ARRAY_METHODS => :@data
 
   def self.from_json(json_pile, content = Card)
     new(json_pile.map { |json| content.from_json(json) })
@@ -22,9 +25,9 @@ class Pile
     @data.as_json
   end
 
-  def inspect
-    "Pile:#{as_json}"
-  end
+  # def inspect
+  #   "Pile:#{as_json}"
+  # end
 
   def add(card)
     @data << card
@@ -41,8 +44,17 @@ class Pile
     by_values.uniq.size == 1
   end
 
+  def sort
+    Pile.new @data.sort { |x, y| x.sort_compare y }
+  end
+
   def by_values
     @data.map(&:value)
+  end
+
+  def contains?(other)
+    other_set = other.to_set
+    other_set.subset? to_set
   end
 
   def get(operator, value)
