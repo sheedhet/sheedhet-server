@@ -15,6 +15,13 @@ RSpec.describe SwapCards do
       position: position
     )
   end
+  let(:lay_cards_turn) do
+    Turn.build(
+      action: LayCards::ACTION,
+      game: game,
+      position: position
+    )
+  end
 
   describe '#valid?' do
     subject { swap_cards.valid? }
@@ -38,7 +45,7 @@ RSpec.describe SwapCards do
     end
 
     context 'player has already played' do
-      before { game.history << { position: position, action: 'play' } }
+      before { game.history << lay_cards_turn }
       it { is_expected.to be false }
     end
   end
@@ -54,6 +61,19 @@ RSpec.describe SwapCards do
     before do
       swap_cards.execute
     end
-    it { is_expected.to eq(correct_result.as_json)}
+    it { is_expected.to eq(correct_result.as_json) }
+  end
+
+  describe '#hasnt_played_yet?' do
+    subject { swap_cards.send :hasnt_played_yet? }
+
+    context 'has not played' do
+      it { is_expected.to eq true }
+    end
+
+    context 'has played' do
+      before { game.history << lay_cards_turn }
+      it { is_expected.to eq false }
+    end
   end
 end
