@@ -1,4 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
+require_relative '../../app/modules/json_equivalence.rb'
+require_relative '../../app/models/player.rb'
 
 RSpec.describe Player do
   let(:hand) { double(Hand) }

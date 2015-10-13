@@ -1,4 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
+require_relative '../../app/modules/json_equivalence.rb'
+require_relative '../../app/models/card.rb'
 
 RSpec.describe Card do
   let(:small_face) { '4' }

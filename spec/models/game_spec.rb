@@ -1,4 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
+require_relative '../../app/modules/json_equivalence.rb'
+require_relative '../../app/models/game.rb'
 
 RSpec.describe Game do
   let(:lay) { LayCards::ACTION }

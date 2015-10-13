@@ -1,4 +1,5 @@
-require 'rails_helper'
+require 'spec_helper'
+require_relative '../../app/services/game_factory.rb'
 
 RSpec.describe Turn do
   let(:game) { GameFactory.new.build }

@@ -1,4 +1,5 @@
-require 'rails_helper'
+require 'spec_helper'
+require_relative '../../app/services/find_valid_turns.rb'
 
 RSpec.describe FindValidTurns do
   let(:game) { GameFactory.new.build }
