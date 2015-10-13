@@ -15,7 +15,7 @@ class Game # < ActiveRecord::Base
   def initialize(collection_type = Pile)
     @discard_pile = collection_type.new
     @draw_pile    = collection_type.new
-    @history      = []    # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
+    @history      = [] # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
     @play_pile    = collection_type.new
     @valid_turns  = []
   end
@@ -37,12 +37,12 @@ class Game # < ActiveRecord::Base
   def started?
     max_possible_swaps = players.size
     return true if history.size > max_possible_swaps
-    history.any? { |turn| turn.is_a? LayCards }
+    history.any? { |turn| turn.is_a?(LayCards) }
   end
 
   def player_has_played?(player)
     history.find do |turn|
       turn.position == player.position && turn.is_a?(LayCards)
-    end.present?
+    end != nil
   end
 end

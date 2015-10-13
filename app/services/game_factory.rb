@@ -29,15 +29,13 @@ class GameFactory
 
   def deal_new_game
     @game_cards.shuffle!
-    Hand::PILE_NAMES.each { |target| deal_everyone(target) }
+    Hand::CONTAINER_NAMES.each { |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)
     @hand_size.times do
       @players.each do |player|
-        # require 'pry'
-        # binding.pry
-        player.cards[target].add @game_cards.pop
+        player.add_to(target: target, subject: @game_cards.pop)
       end
     end
   end
@@ -54,7 +52,7 @@ class GameFactory
 
   def create_players(existing_players: [])
     Array.new(@num_players) do |i|
-      player_to_add = existing_players.fetch i, position: i
+      player_to_add = existing_players.fetch(i, position: i)
       Player.new(player_to_add)
     end
   end

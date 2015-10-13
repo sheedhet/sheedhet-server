@@ -3,8 +3,6 @@
 class Card
   include JsonEquivalence
 
-  attr_reader :suit, :face
-
   SUITS = %w(c d h s)
   FACES = %w(a 2 3 4 5 6 7 8 9 10 j q k)
   VALUES = {
@@ -17,6 +15,8 @@ class Card
     '10' => 15
   }
 
+  attr_reader :suit, :face
+
   def self.random_card
     new(face: FACES.sample, suit: SUITS.sample)
   end
@@ -25,6 +25,7 @@ class Card
     suit = json_string.slice!(-1)
     new(suit: suit, face: json_string)
   end
+
 
   def initialize(suit: SUITS.sample, face: FACES.sample)
     fail ArgumentError, "Invalid suit: #{suit}" unless SUITS.include?(suit)
@@ -36,12 +37,10 @@ class Card
   def <=>(other)
     is_card = other.class == Card
     fail ArgumentError, "Can't compare Card to non-Card" unless is_card
-    [value, face, suit] <=> [other.value, other.face, other.suit]
+    self_as_values = [value, face, suit]
+    other_as_values = [other.value, other.face, other.suit]
+    self_as_values <=> other_as_values
   end
-
-  # def inspect
-  #   "Card:#{as_json}"
-  # end
 
   def value
     VALUES[face] || face.to_i

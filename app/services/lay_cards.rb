@@ -6,7 +6,8 @@ class LayCards < Turn
   def execute
     @play_cards.each do |pile_name, pile|
       pile.each do |card|
-        @game.play_pile.add @player.cards[pile_name].remove(card)
+        card = @player.cards.remove_from(target: pile_name, subject: card)
+        @game.play_pile.add(card)
       end
     end
   end

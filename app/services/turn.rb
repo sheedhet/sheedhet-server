@@ -2,6 +2,7 @@
 #
 class Turn
   include JsonEquivalence
+  require 'active_support/inflector' # for String#camelize
 
   attr_reader :position
 
@@ -17,7 +18,7 @@ class Turn
 
   def initialize(action:, game:, play_cards:, position:)
     @action = action
-    @game = game  # pull game from db
+    @game = game # pull game from db
     @play_cards = play_cards
     @position = position
     @player = @game.players[position]
@@ -32,7 +33,7 @@ class Turn
   end
 
   def valid?
-    @game.valid_turns.include? self
+    @game.valid_turns.include?(self)
   end
 
   def execute
