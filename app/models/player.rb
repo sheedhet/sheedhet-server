@@ -3,8 +3,6 @@
 class Player
   include JsonEquivalence
 
-  attr_accessor :cards, :name, :position
-
   PLAYER_NAMES = %w(
     Ted
     Bill
@@ -26,16 +24,31 @@ class Player
     Mel
     Mandy
     Laura
+    Phil
+    Max
+    Nick
+    Carly
+    Amanda
+    Emma
+    Cody
+    Evan
+    Nolan
+    Tony
+    Rae
   )
 
+  attr_accessor :cards, :name, :position
+
   def initialize(
-    cards: Hand.new,
     name: random_name,
-    position: 0
+    position: 0,
+    container: Hand,
+    existing: {}
   )
-    @cards     = cards
-    @name      = name
-    @position  = position
+    @cards = container.new(existing)
+    @cards = cards
+    @name = name
+    @position = position
   end
 
   def as_json
@@ -43,6 +56,11 @@ class Player
       position: @position,
       cards: @cards.as_json
     }
+  end
+
+  def add_to(target:, subject:)
+    cards.add_to(target: target, subject: subject)
+    self
   end
 
   def get_playable(operator:, value:)
