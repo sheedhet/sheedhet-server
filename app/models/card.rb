@@ -26,7 +26,6 @@ class Card
     new(suit: suit, face: json_string)
   end
 
-
   def initialize(suit: SUITS.sample, face: FACES.sample)
     fail ArgumentError, "Invalid suit: #{suit}" unless SUITS.include?(suit)
     fail ArgumentError, "Invalid face: #{face}" unless FACES.include?(face)
