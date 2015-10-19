@@ -46,7 +46,6 @@ class Player
     existing: {}
   )
     @cards = container.new(existing)
-    @cards = cards
     @name = name
     @position = position
   end
