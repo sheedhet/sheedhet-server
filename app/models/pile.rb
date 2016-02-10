@@ -6,11 +6,11 @@ class Pile
   include JsonEquivalence
   extend Direction
 
-  DELEGATE_ARRAY_COMMANDS = %i( each select )
+  DELEGATE_ARRAY_COMMANDS = %i( each select ).freeze
 
   DELGATE_ARRAY_QUERIES = %i(
     all? count include? pop size + - sort rindex first last to_set sample
-  )
+  ).freeze
 
   command DELEGATE_ARRAY_COMMANDS => :@data
   query DELGATE_ARRAY_QUERIES => :@data
@@ -25,7 +25,7 @@ class Pile
 
   def initialize(existing = [], content = Card)
     content_matches = existing.all? { |obj| obj.is_a?(content) }
-    fail ArgumentError, 'Incorrect content class' unless content_matches
+    raise ArgumentError, 'Incorrect content class' unless content_matches
     @data = existing
   end
 
@@ -40,7 +40,7 @@ class Pile
 
   def remove(card)
     index = @data.index(card)
-    fail ArgumentError, "Card #{card} not found" if index.nil?
+    raise ArgumentError, "Card #{card} not found" if index.nil?
     @data.slice!(index)
   end
 
