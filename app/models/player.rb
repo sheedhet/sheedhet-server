@@ -35,7 +35,7 @@ class Player
     Nolan
     Tony
     Rae
-  )
+  ).freeze
 
   attr_accessor :cards, :name, :position
 
@@ -56,6 +56,13 @@ class Player
       cards: @cards.as_json
     }
   end
+
+  # perhaps a :deal flag so we can do different rules during deal?
+  # would it be crazy to use << ?
+  # def take card ?? better name or send card?
+  # def add_to_top_pile(card) {
+  #   this might simplify interaction with hand/pile objects
+  # }
 
   def add_to(target:, subject:)
     cards.add_to(target: target, subject: subject)

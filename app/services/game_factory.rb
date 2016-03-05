@@ -1,15 +1,41 @@
 # Service responsible for creating games
 #
 class GameFactory
-  def initialize(hand_size: 4, num_decks: 1, num_players: 3, state: {})
-    @state = state
-    @hand_size = hand_size
-    @num_decks = num_decks
-    @num_players = num_players
+  DEFAULT_CLASSES = {
+    player_class: Player,
+    game_class: Game,
+    # card_class: Card,
+    # dealer_class: CardDealer
+  }
+
+  DEFAULT_OPTIONS = {
+    hand_size: 4,
+    num_decks: 1,
+    num_players: 3
+  }
+
+  def self.build(state: {})
+    factory = new(state: state)
+    state.empty? ? factory.create_new_game : factory.reconstitute_from_state
   end
 
-  def build
-    @state.empty? ? create_new_game : reconstitute_from_state
+  def initialize(
+    state: {},
+    classes: DEFAULT_CLASSES,
+    options: DEFAULT_OPTIONS
+  )
+    @hand_size = options[:hand_size]
+    @num_decks = options[:num_decks]
+    @num_players = options[:num_players]
+    @state = state
+    define_classes(classes)
+    @game = @game_class.new
+  end
+
+  def define_classes(param_classes)
+    all_classes = DEFAULT_CLASSES.merge param_classes
+    @player_class = all_classes[:player_class]
+    @game_class = all_classes[:game_class]
   end
 
   def reconstitute_from_state
@@ -18,42 +44,26 @@ class GameFactory
 
   def create_new_game
     @players = create_players
-    @game_cards = create_game_cards
-    deal_new_game
-    Game.new.tap do |game|
-      game.draw_pile = @game_cards
+    # @game_cards = create_game_cards
+    # deal_new_game
+    @game_class.new.tap do |game|
+      # game.draw_pile = @game_cards
       game.hand_size = @hand_size
       game.players = @players
     end
   end
 
-  def deal_new_game
-    @game_cards.shuffle!
-    Hand::CONTAINER_NAMES.each { |target| deal_everyone(target) }
+  def deck=(deck)
+    @draw_pile = deck
   end
 
-  def deal_everyone(target)
-    @hand_size.times do
-      @players.each do |player|
-        player.add_to(target: target, subject: @game_cards.pop)
-      end
-    end
-  end
-
-  def create_game_cards
-    create_deck * @num_decks
-  end
-
-  def create_deck
-    Card::SUITS.product(Card::FACES).map do |suit, face|
-      Card.new(suit: suit, face: face)
-    end
-  end
+  private
 
   def create_players(existing_players: [])
-    Array.new(@num_players) do |i|
-      player_to_add = existing_players.fetch(i, position: i)
-      Player.new(player_to_add)
+    @num_players.times do |i|
+      new_player_details = existing_players.fetch(i, position: i)
+      new_player = @player_class.new(new_player_details)
+      @game.add_player(new_player)
     end
   end
 end

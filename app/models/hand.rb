@@ -4,10 +4,10 @@ class Hand
   include JsonEquivalence
   extend Direction
 
-  CONTAINER_NAMES = %i(in_hand face_up face_down)
+  CONTAINER_NAMES = %i(in_hand face_up face_down).freeze
 
-  DELEGATE_HASH_COMMANDS = %i(merge!)
-  DELEGATE_HASH_QUERIES = %i([] each)
+  DELEGATE_HASH_COMMANDS = %i(merge!).freeze
+  DELEGATE_HASH_QUERIES = %i([] each).freeze
 
   attr_reader :container_names
 
@@ -46,7 +46,7 @@ class Hand
       container_names: @container_names
     )
     @data.each_with_object(new_hand) do |(pile_name, pile), result|
-      result.merge!(pile_name => pile)
+      result[pile_name] = pile
       break unless pile.all_same?
     end
   end

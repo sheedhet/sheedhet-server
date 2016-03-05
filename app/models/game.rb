@@ -18,6 +18,7 @@ class Game # < ActiveRecord::Base
     @history      = [] # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
     @play_pile    = collection_type.new
     @valid_turns  = []
+    @players      = []
   end
 
   def as_json
@@ -44,5 +45,9 @@ class Game # < ActiveRecord::Base
     history.find do |turn|
       turn.position == player.position && turn.is_a?(LayCards)
     end != nil
+  end
+
+  def add_player(player)
+    players << player
   end
 end

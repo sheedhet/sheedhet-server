@@ -16,16 +16,28 @@ class FindValidTurns
     @last_card_played ||= @game.play_pile.last
   end
 
-  def find_next_value
-    last_played = last_card_played
-    case last_played.face
-    when %w(4 5 6 7 8 9 j q k a)
-      last_played.value
+  def last_face_played
+    last_card_played.face
+  end
+
+  def params_to_get_next_valid
+    operator = :>=
+    case last_card_played.face
     when '2'
-      4
+      value = 3
     when '3'
-      # scan for previous non-three value
+      value = @game.play_pile.rindex { |card| card.face != '3' }.value
+    when '7'
+      operator = :<=
     end
+    { operator: operator, value: value }
+  end
+
+  def find_all_playable(operator:, value:)
+    @game.players.each_with_object({}) do |player, result|
+      result[player] = player.get_playable(operator: operator, value: value)
+    end
+    playable
   end
 
   # def find_starter_turns
@@ -83,7 +95,7 @@ class FindValidTurns
 
   #
   # def find_starters
-  #   @game.players.inject([]) do |starters, player|
+  #   @game.players.reduce([]) do |starters, player|
   #     valid_cards = player.cards[:in_hand].select do |card|
   #       card.value == min_value
   #     end
