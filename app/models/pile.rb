@@ -6,10 +6,11 @@ class Pile
   include JsonEquivalence
   extend Direction
 
-  DELEGATE_ARRAY_COMMANDS = %i( each select ).freeze
+  DELEGATE_ARRAY_COMMANDS = %i( each select << ).freeze
 
   DELGATE_ARRAY_QUERIES = %i(
-    all? count include? pop size + - sort rindex first last to_set sample
+    all? count include? pop size + - sort rindex first last to_set sample empty?
+    group_by
   ).freeze
 
   command DELEGATE_ARRAY_COMMANDS => :@data
@@ -21,6 +22,10 @@ class Pile
       content.from_json(json)
     end
     new(array_as_json)
+  end
+
+  def self.random(size = 4)
+    new(Array.new(size) { Card.new })
   end
 
   def initialize(existing = [], content = Card)
@@ -38,10 +43,15 @@ class Pile
     self
   end
 
-  def remove(card)
-    index = @data.index(card)
-    raise ArgumentError, "Card #{card} not found" if index.nil?
+  def remove(other)
+    to_remove = @data.find { |c| c.suit == other.suit && c.face == other.face }
+    index = @data.index(to_remove)
+    raise ArgumentError, "Card #{other} not found" if index.nil?
     @data.slice!(index)
+  end
+
+  def group_by_face
+    group_by(&:face)
   end
 
   # SMELLY
