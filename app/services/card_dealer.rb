@@ -6,7 +6,7 @@ class CardDealer
   end
 
   def initialize(game, hand_type)
-    @cards = game.cards
+    @cards = game.draw_pile
     @hand_size = game.hand_size
     @players = game.players
     @hand_type = hand_type
