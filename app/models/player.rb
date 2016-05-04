@@ -57,12 +57,20 @@ class Player
     }
   end
 
+  def take_deal(card, hand_size)
+    cards.take_deal(card, hand_size)
+  end
+
   # perhaps a :deal flag so we can do different rules during deal?
   # would it be crazy to use << ?
   # def take card ?? better name or send card?
   # def add_to_top_pile(card) {
   #   this might simplify interaction with hand/pile objects
   # }
+
+  def plays
+    cards.plays.map { |hand| Play.new(player: self, hand: hand) }
+  end
 
   def add_to(target:, subject:)
     cards.add_to(target: target, subject: subject)
