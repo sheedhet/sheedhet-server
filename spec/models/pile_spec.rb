@@ -4,53 +4,55 @@ require_relative '../../app/modules/direction.rb'
 require_relative '../../app/models/pile.rb'
 
 RSpec.describe Pile do
-  let(:content) { double(Card) }
+  let(:content) { double('Card') }
+
   describe '.from_json' do
-    let(:card1_face) { 'a' }
-    let(:card1_suit) { 's' }
-    let(:card2_face) { '9' }
-    let(:card2_suit) { 'd' }
-    let(:card1_json) { "#{card1_face}#{card1_suit}" }
-    let(:card2_json) { "#{card2_face}#{card2_suit}" }
-    let(:content) { double(Card) }
-    subject { Pile.from_json("[#{card1_json}, #{card2_json}]", content) }
+    let(:card1_json) { 'as' }
+    let(:card2_json) { '9d' }
+    let(:pile_json) { "[\"#{card1_json}\", \"#{card2_json}\"]" }
 
-    # !!!!!!!!!!!!!!!!!!!!
-    # learn some more about mocking classes in tests!!!
-    # !!!!!!!!!!!!!!!!!!!!
-
-    it do
-      is_expected.to contain_exactly(
-        Card.new(suit: card1_suit, face: card1_face),
-        Card.new(suit: card2_suit, face: card2_face)
-      )
+    it 'passes on the .from_json to the collection contents' do
+      expect(content).to receive(:from_json).with(card1_json)
+      expect(content).to receive(:from_json).with(card2_json)
+      expect(Pile.from_json(pile_json, content)).to be_a(Pile)
     end
   end
 
   describe '#add' do
-    let(:empty_pile) { [] }
-    let(:card) { double('Card') }
-    let(:pile_with_card) { empty_pile.push(card) }
-    subject(:pile) { Pile.new(existing, card.class) }
-    context 'adding a card' do
-      let(:existing) { empty_pile }
-      before { pile.add card }
-      it { is_expected.to include card }
-      it { expect(pile.size).to eq 1 }
-    end
+    let(:empty_pile) { Pile.new }
+    let(:card) { instance_double('Card') }
+    let(:pile_with_card) { Pile.new([card]) }
+    subject(:pile) { empty_pile.add(card) }
+    it { is_expected.to include card }
+    it { is_expected.not_to be_empty }
   end
 
   describe '#remove' do
+    let(:card) { double('Card') }
+    let(:pile_without_card) { Pile.new }
+    let(:pile_with_card) { Pile.new([card]) }
+
     context 'card is in pile' do
-      let(:existing) { pile_with_card }
-      before { pile.remove card }
+      subject { pile_with_card.remove(card) }
       it { is_expected.not_to include card }
-      it { expect(pile.size).to eq 0 }
+      it { is_expected.to be_empty }
     end
 
     context 'card not in pile' do
-      let(:existing) { empty_pile }
-      it { expect { pile.remove card }.to raise_error(ArgumentError) }
+      subject { pile_without_card.remove(card) }
+      it { expect { subject }.to raise_error(ArgumentError) }
+    end
+
+    context 'multiple cards in pile' do
+      let(:card) { instance_double('Card', as_json: 'as') }
+      let(:card2) { instance_double('Card', as_json: 'as') }
+      let(:pile) { Pile.new([card, card, card2]) }
+      subject { pile.remove(card) }
+      before do
+        allow(card).to receive(:as_json).and_return(card)
+        allow(card2).to receive(:as_json).and_return(card)
+      end
+      it { is_expected.to eq(Pile.new([card, card2])) }
     end
   end
 end

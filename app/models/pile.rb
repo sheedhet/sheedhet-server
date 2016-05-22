@@ -28,9 +28,7 @@ class Pile
     new(Array.new(size) { Card.new })
   end
 
-  def initialize(existing = [], content = Card)
-    content_matches = existing.all? { |obj| obj.is_a?(content) }
-    raise ArgumentError, 'Incorrect content class' unless content_matches
+  def initialize(existing = [])
     @data = existing
   end
 
@@ -44,10 +42,10 @@ class Pile
   end
 
   def remove(other)
-    to_remove = @data.find { |c| c.suit == other.suit && c.face == other.face }
-    index = @data.index(to_remove)
-    raise ArgumentError, "Card #{other} not found" if index.nil?
-    @data.slice!(index)
+    remove_index = @data.find_index(other)
+    raise ArgumentError, "Card #{other} not found" if remove_index.nil?
+    @data.slice!(remove_index)
+    self
   end
 
   def group_by_face
@@ -55,32 +53,32 @@ class Pile
   end
 
   # SMELLY
-  def all_same?
-    by_values.uniq.size == 1
-  end
+  # def all_same?
+  #   by_values.uniq.size == 1
+  # end
 
-  def sort
-    @data = data.sort { |x, y| x <=> y }
-    self
-  end
-
-  # SMELLY
-  def by_values
-    @data.map(&:value)
-  end
+  # def sort
+  #   @data = data.sort { |x, y| x <=> y }
+  #   self
+  # end
 
   # SMELLY
-  def contains?(other)
-    other_set = other.to_set
-    other_set.subset?(to_set)
-  end
+  # def by_values
+  #   @data.map(&:value)
+  # end
 
-  def get(operator, value)
-    return new unless [:==, :>=, :<=].include?(operator)
-    select { |card| card.value.public_send(operator, value) }
-  end
+  # SMELLY
+  # def contains?(other)
+  #   other_set = other.to_set
+  #   other_set.subset?(to_set)
+  # end
 
-  def get_all(face)
-    select { |card| card.face == face }
-  end
+  # def get(operator, value)
+  #   return new unless [:==, :>=, :<=].include?(operator)
+  #   select { |card| card.value.public_send(operator, value) }
+  # end
+
+  # def get_all(face)
+  #   select { |card| card.face == face }
+  # end
 end
