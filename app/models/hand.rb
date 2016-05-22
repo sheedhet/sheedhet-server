@@ -27,11 +27,16 @@ class Hand
   def self.from_json(json_hand, container = Pile)
     as_hash = JSON.parse(json_hand)
     existing = as_hash.each_with_object({}) do |(pile_name, json_pile), result|
+      #
+      # !!!!!!!!!!!!!!!!!!!!!!
+      # WHATS GOING ON WITH THIS to_json CALL??
+      # !!!!!!!!!!!!!!!!!!!!!!
+      #
       pile_json_string = json_pile.to_json
       new_pile = container.from_json(pile_json_string)
       result[pile_name.to_sym] = new_pile
     end
-    new(existing)
+    new(existing, container, as_hash.keys)
   end
 
   def self.random
