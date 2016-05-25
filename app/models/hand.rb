@@ -26,14 +26,9 @@ class Hand
 
   def self.from_json(json_hand, container = Pile)
     as_hash = JSON.parse(json_hand)
-    existing = as_hash.each_with_object({}) do |(pile_name, json_pile), result|
-      #
-      # !!!!!!!!!!!!!!!!!!!!!!
-      # WHATS GOING ON WITH THIS to_json CALL??
-      # !!!!!!!!!!!!!!!!!!!!!!
-      #
-      pile_json_string = json_pile.to_json
-      new_pile = container.from_json(pile_json_string)
+    existing = as_hash.each_with_object({}) do |(pile_name, pile), result|
+      json_pile = pile.to_json
+      new_pile = container.from_json(json_pile)
       result[pile_name.to_sym] = new_pile
     end
     new(existing, container, as_hash.keys)
@@ -48,11 +43,25 @@ class Hand
   end
 
   def +(other)
-    return self unless other.is_a?(Hand)
-    result = as_json.each_with_object(other.as_json) do |(desc, cards), obj|
-      obj[desc] = obj[desc] + cards
+    raise ArgumentError unless other.is_a?(Hand)
+    combined = @container_names.each_with_object({}) do |pile_name, result|
+      result[pile_name] = @data[pile_name] + other[pile_name]
     end
-    Hand.from_json(result.to_json)
+    Hand.new(combined, @container)
+  end
+
+  def lowest_card
+    self[:in_hand].min
+  end
+
+  def add_to(target:, subject:)
+    @data[target].add(subject)
+    self
+  end
+
+  def remove_from(target:, subject:)
+    @data[target].remove(subject)
+    self
   end
 
   def plays
@@ -67,9 +76,11 @@ class Hand
     Array(final_plays)
   end
 
+  protected
+
   def plays_from_active_pile
     pile_name, active_pile = compact.first
-    return [] if active_pile.nil?
+    return {} if active_pile.nil?
     grouped_by_face = active_pile.group_by_face
     grouped_by_face.map do |face, cards|
       [face, Hand.new(pile_name => cards)]
@@ -89,7 +100,7 @@ class Hand
     end
   end
 
-  def compact # protected?
+  def compact
     @data.reject { |_pile_name, pile| pile.empty? }
   end
 
@@ -100,19 +111,5 @@ class Hand
         break
       end
     end
-  end
-
-  def lowest_card
-    self[:in_hand].min
-  end
-
-  def add_to(target:, subject:)
-    @data[target].add(subject)
-    self
-  end
-
-  def remove_from(target:, subject:)
-    @data[target].remove(subject)
-    self
   end
 end
