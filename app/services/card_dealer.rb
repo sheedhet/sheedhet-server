@@ -1,16 +1,15 @@
 # Deals cards in a game
 #
 class CardDealer
-  def self.deal(game, hand_type: Hand)
-    new(game, hand_type)
+  def self.deal(game, hand_type = Hand)
+    new(game, hand_type).deal_new_game
   end
 
-  def initialize(game, hand_type)
+  def initialize(game, hand_type = Hand)
     @cards = game.draw_pile
     @hand_size = game.hand_size
     @players = game.players
     @hand_type = hand_type
-    deal_new_game
   end
 
   def deal_new_game
