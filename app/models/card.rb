@@ -17,8 +17,16 @@ class Card
 
   attr_reader :suit, :face
 
+  def self.suits
+    SUITS
+  end
+
+  def self.faces
+    FACES
+  end
+
   def self.random_card
-    new(face: FACES.sample, suit: SUITS.sample)
+    new(face: faces.sample, suit: suits.sample)
   end
 
   def self.from_json(json_string)
@@ -26,7 +34,7 @@ class Card
     new(suit: suit, face: json_string)
   end
 
-  def initialize(suit: SUITS.sample, face: FACES.sample)
+  def initialize(suit: suits.sample, face: faces.sample)
     raise ArgumentError, "Invalid suit: #{suit}" unless SUITS.include?(suit)
     raise ArgumentError, "Invalid face: #{face}" unless FACES.include?(face)
     @suit = suit

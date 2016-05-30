@@ -43,7 +43,7 @@ RSpec.describe Card do
       end
 
       context 'with different suit' do
-        let(:other_suit) { Card::SUITS.find { |s| s != subject_card.suit } }
+        let(:other_suit) { Card.suits.find { |s| s != subject_card.suit } }
         it { is_expected.to eq(1).or eq(-1) }
       end
     end
