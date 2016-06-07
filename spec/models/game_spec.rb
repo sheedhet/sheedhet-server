@@ -3,42 +3,31 @@ require_relative '../../app/modules/json_equivalence.rb'
 require_relative '../../app/models/game.rb'
 
 RSpec.describe Game do
-  let(:lay) { LayCards::ACTION }
-  let(:swap) { SwapCards::ACTION }
-  let(:game) { GameFactory.new.build }
+  let(:game) { GameFactory.build }
   let(:player) { game.players.first }
-  let(:turn) do
-    Turn.build action: action, position: player.position, game: game
-  end
 
   describe '#started?' do
-    subject { game.started? }
+    subject { game.send(:started?) }
     context 'history is greater than max possible' do
-      let(:action) { SwapCards::ACTION }
-      before { game.players.size.next.times { game.history << turn } }
+      before do
+        game.players.size.next.times.with_index do |i|
+          game.history << OpenStruct.new(player: i)
+        end
+      end
       it { is_expected.to eq true }
     end
 
-    context 'does not contain any LayCard Turns' do
-      it { is_expected.to eq false }
-    end
-
-    context 'contains a LayCard Turn' do
-      let(:action) { lay }
-      before { game.history << turn }
-      it { is_expected.to eq true }
-    end
-  end
-
-  describe '#player_has_played?' do
-    subject { game.player_has_played? player }
-    context 'has played' do
-      let(:action) { lay }
-      before { game.history << turn }
+    context 'there are multiple plays by same player' do
+      let(:play) { OpenStruct.new(player: player) }
+      before { game.history += [play, play] }
       it { is_expected.to eq true }
     end
 
-    context 'has not played' do
+    context 'all turns unique to players and less than max possible' do
+      let(:play1) { OpenStruct.new(player: 'player1') }
+      let(:play2) { OpenStruct.new(player: 'player2') }
+      let(:play3) { OpenStruct.new(player: 'player3') }
+      before { game.history += [play1, play2, play3] }
       it { is_expected.to eq false }
     end
   end

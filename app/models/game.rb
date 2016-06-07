@@ -26,13 +26,13 @@ class Game # < ActiveRecord::Base
                 :play_pile,
                 :valid_plays
 
-  def initialize(deck, hand_size, collection_type = Pile)
+  def initialize(deck:, players:, hand_size:, collection_type: Pile)
     @discard_pile = collection_type.new
     @draw_pile    = deck
     @history      = [] # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
     @play_pile    = collection_type.new
     @valid_plays  = []
-    @players      = []
+    @players      = players
     @hand_size    = hand_size
   end
 
@@ -52,12 +52,14 @@ class Game # < ActiveRecord::Base
 
   def update_valid_plays
     @valid_plays =
-      if history.empty?
+      if started?
         find_first_plays
       else
         find_mid_game_plays
       end
   end
+
+  protected
 
   def find_mid_game_plays
     card_to_play_on = play_pile.reverse.find { |c| c.face != '3' }
@@ -93,20 +95,7 @@ class Game # < ActiveRecord::Base
   def started?
     max_possible_swaps = players.size
     return true if history.size > max_possible_swaps
-    history.any? { |turn| turn.is_a?(LayCards) }
-  end
-
-  def player_has_played?(player)
-    history.find do |turn|
-      turn.position == player.position && turn.is_a?(LayCards)
-    end != nil
-  end
-
-  def add_player(player)
-    players << player
-  end
-
-  def deck=(cards)
-    @draw_pile << cards
+    turns_grouped_by_player = history.group_by(&:player)
+    turns_grouped_by_player.any? { |_, turns| turns.size > 1 }
   end
 end
