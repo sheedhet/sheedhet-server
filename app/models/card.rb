@@ -34,7 +34,7 @@ class Card
     new(suit: suit, face: json_string)
   end
 
-  def initialize(suit: suits.sample, face: faces.sample)
+  def initialize(suit: self.class.suits.sample, face: self.class.faces.sample)
     raise ArgumentError, "Invalid suit: #{suit}" unless SUITS.include?(suit)
     raise ArgumentError, "Invalid face: #{face}" unless FACES.include?(face)
     @suit = suit
