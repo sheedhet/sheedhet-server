@@ -1,17 +1,17 @@
 # Service responsible for creating games
 #
 class GameFactory
-  DEFAULT_CLASSES = {
-    player_class: Player,
-    game_class: Game,
-    # card_class: Card,
-    dealer_class: CardDealer
-  }.freeze
-
   DEFAULT_OPTIONS = {
     hand_size: 4,
     num_decks: 1,
     num_players: 3
+  }.freeze
+
+  DEFAULT_CLASSES = {
+    player_class: Player,
+    game_class: Game,
+    card_dealer: CardDealer,
+    deck_factory: DeckFactory
   }.freeze
 
   def self.build(state: {})
@@ -21,8 +21,8 @@ class GameFactory
 
   def initialize(
     state: {},
-    classes: DEFAULT_CLASSES,
-    options: DEFAULT_OPTIONS
+    options: DEFAULT_OPTIONS,
+    classes: DEFAULT_CLASSES
   )
     @hand_size = options[:hand_size]
     @num_decks = options[:num_decks]
@@ -31,31 +31,31 @@ class GameFactory
     define_classes(classes)
   end
 
-  def define_classes(param_classes)
-    all_classes = DEFAULT_CLASSES.merge param_classes
-    @player_class = all_classes[:player_class]
-    @game_class = all_classes[:game_class]
-    @dealer = all_classes[:dealer_class]
-  end
-
   def reconstitute_from_state
     raise "You haven't written reconstitute_from_state yet"
   end
 
   def create_new_game
     deck = create_cards
-    game = @game_class.new(deck, @hand_size)
     players = create_players
-    players.each { |p| game.add_player(p) }
-    @dealer.deal(game)
+    game = @game_class.new(deck: deck, players: players, hand_size: @hand_size)
+    @card_dealer.deal(game)
     game
   end
 
-  def create_cards(deck_factory = DeckFactory)
-    deck_factory.build(@num_decks)
+  protected
+
+  def define_classes(classes)
+    class_list = DEFAULT_CLASSES.merge(classes)
+    @player_class = class_list[:player_class]
+    @game_class = class_list[:game_class]
+    @card_dealer = class_list[:card_dealer]
+    @deck_factory = class_list[:deck_factory]
   end
 
-  private
+  def create_cards
+    @deck_factory.build(@num_decks)
+  end
 
   def create_players(existing_players: [])
     Array.new(@num_players) do |i|
