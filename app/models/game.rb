@@ -26,6 +26,8 @@ class Game # < ActiveRecord::Base
                 :play_pile,
                 :valid_plays
 
+  attr_reader :id
+
   def initialize(deck:, players:, hand_size:, collection_type: Pile)
     @discard_pile = collection_type.new
     @draw_pile    = deck
@@ -40,14 +42,17 @@ class Game # < ActiveRecord::Base
     game_state.as_json
   end
 
+  def to_json
+    as_json.to_json
+  end
+
   def game_state
     { discard_pile: discard_pile,
       draw_pile: draw_pile,
       hand_size: hand_size,
       players: players,
       play_pile: play_pile,
-      valid_plays: valid_plays
-    }
+      valid_plays: valid_plays }
   end
 
   def update_valid_plays
