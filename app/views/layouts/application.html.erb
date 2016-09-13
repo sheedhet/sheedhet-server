@@ -9,23 +9,14 @@
 
   <%= action_cable_meta_tag %>
 
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <%#= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%#= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
   <%= csrf_meta_tags %>
-
-  <!--[if lt IE 9]>
-  <script
-      src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-  <script
-      src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js"></script>
-  <script
-      src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-  <![endif]-->
 </head>
 
 <body>
-  <%= render 'layouts/google_analytics' %>
+  <%#= render 'layouts/google_analytics' %>
   <header>
     <%= render 'layouts/navigation' %>
   </header>
