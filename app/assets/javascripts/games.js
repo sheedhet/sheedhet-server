@@ -18,7 +18,11 @@ var SheedhetGame = (function() {
     var game_data_json = game_space.dataset.game;
     _game = JSON.parse(game_data_json);
     _deck = Deck();
+    deck().cards.forEach(function(card) {
+      card.setSide('back');
+    });
     deck().mount(game_space);
+    deal_game();
   };
 
   var get_card = function(card_json) {
@@ -57,23 +61,79 @@ var SheedhetGame = (function() {
     return result;
   };
 
-  var deal_game = function() {
+  var deal_bottom_player = function() {
     var cards = player(0).cards;
-    var starting_x = -100;
+    var starting_x = -125;
     var starting_y = 350;
     cards.face_down.forEach(function(card_json, i) {
       var card = get_card(card_json);
+      card.setSide('back');
       card.animateTo({
-        x: starting_x + (i * 30),
-        y: starting_y,
-        rot: 0,
+        x: starting_x + (i * 80),
+        y: starting_y - 150,
+        rot: getRandomIntInclusive(-5, 5),
         delay: i * 100,
         duration: 1000,
         onStart: function() { card.$el.style.zIndex = i; }
       });
     });
+    cards.face_up.forEach(function(card_json, i) {
+      var card = get_card(card_json);
+      card.setSide('front');
+      card.animateTo({
+        x: starting_x + (i * 80),
+        y: starting_y - 200,
+        rot: getRandomIntInclusive(-5, 5),
+        delay: i * 100,
+        duration: 1000,
+        onStart: function() { card.$el.style.zIndex = i + 4; }
+      });
+    });
+    cards.in_hand.forEach(function(card_json, i) {
+      var card = get_card(card_json);
+      card.setSide('front');
+      card.animateTo({
+        x: starting_x + (i * 80),
+        y: starting_y,
+        rot: getRandomIntInclusive(-5, 5),
+        delay: i * 100,
+        duration: 1000,
+        onStart: function() { card.$el.style.zIndex = i + 40; }
+      });
+    });
   };
 
+  var deal_game = function() {
+    deal_bottom_player();
+  };
+
+// try and deal everyone using the rotation matrix!!
+  var rotate = function(cx, cy, x, y, angle) {
+    var radians = (Math.PI / 180) * angle,
+        cos = Math.cos(radians),
+        sin = Math.sin(radians),
+        nx = (cos * (x - cx)) + (sin * (y - cy)) + cx,
+        ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    return [nx, ny];
+  };
+
+  var positions = {
+    'top': {
+      'in_hand': [
+
+      ],
+      'face_up': [
+
+      ],
+      'face_down': [
+
+      ]
+    }
+  };
+
+  var getRandomIntInclusive = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
 
   var player = function(position) {
     return _game.players.find(function(player) {

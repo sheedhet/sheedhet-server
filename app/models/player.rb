@@ -39,22 +39,32 @@ class Player
 
   attr_accessor :cards, :name, :position
 
+  def self.from_json(json, container: Hand)
+    hash = JSON.parse(json)
+    cards = container.from_json(hash['cards'].to_json)
+    new(name: hash['name'], position: hash['position'], existing: cards)
+  end
+
   def initialize(
     name: random_name,
     position: 0,
     container: Hand,
-    existing: {}
+    existing: Hand.new
   )
-    @cards = container.new(existing)
+    @cards = existing
+    @container = container
     @name = name
     @position = position
+  end
+
+  def dup
+    self.class.new(name: name.dup, position: position, existing: cards.dup)
   end
 
   def as_json
     { name: @name,
       position: @position,
-      cards: @cards.as_json
-    }
+      cards: @cards.as_json }
   end
 
   def take_deal(card, hand_size)

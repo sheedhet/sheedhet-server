@@ -6,30 +6,19 @@ class Hand
 
   CONTAINER_NAMES = %i(in_hand face_up face_down).freeze
 
-  DELEGATE_HASH_QUERIES = %i([] each).freeze
+  DELEGATE_HASH_QUERIES = %i([] each to_h).freeze
 
-  attr_reader :container_names
+  attr_reader :container_names, :data
 
   query DELEGATE_HASH_QUERIES => :@data
-
-  def initialize(
-    existing = {},
-    container = Pile,
-    container_names = CONTAINER_NAMES
-  )
-    @container = container
-    @container_names = container_names
-    empty_hand = container_names.map { |pile| [pile, container.new] }.to_h
-    valid_containers = existing.select { |n, _| @container_names.include?(n) }
-    @data = empty_hand.merge(valid_containers)
-  end
 
   def self.from_json(json_hand, container = Pile)
     as_hash = JSON.parse(json_hand)
     existing = as_hash.each_with_object({}) do |(pile_name, pile), result|
-      json_pile = pile.to_json
+      json_pile = pile.as_json.to_json
       new_pile = container.from_json(json_pile)
       result[pile_name.to_sym] = new_pile
+      result
     end
     new(existing, container, as_hash.keys)
   end
@@ -38,12 +27,28 @@ class Hand
     new(in_hand: Pile.random, face_up: Pile.random, face_down: Pile.random)
   end
 
+  def initialize(
+    existing = {},
+    container = Pile,
+    container_names = CONTAINER_NAMES
+  )
+    @container = container
+    @container_names = container_names.map(&:to_sym)
+    empty_hand = @container_names.map { |pile| [pile, container.new] }.to_h
+    valid_containers = existing.select { |n, _| @container_names.include?(n) }
+    @data = empty_hand.merge(valid_containers)
+  end
+
+  def dup
+    self.class.new(@data.keys.zip(@data.values.map(&:dup)).to_h)
+  end
+
   def as_json
     @data.map { |name, pile| [name, pile.as_json] }.to_h
   end
 
   def +(other)
-    raise ArgumentError unless other.is_a?(Hand)
+    raise ArgumentError, "Can't add to #{other.class}" unless other.is_a?(Hand)
     combined = @container_names.each_with_object({}) do |pile_name, result|
       result[pile_name] = @data[pile_name] + other[pile_name]
     end
@@ -76,6 +81,10 @@ class Hand
     Array(final_plays)
   end
 
+  def compact
+    @data.reject { |_pile_name, pile| pile.empty? }
+  end
+
   protected
 
   def plays_from_active_pile
@@ -98,10 +107,6 @@ class Hand
       break result if grouped_by_face.size > 1
       result
     end
-  end
-
-  def compact
-    @data.reject { |_pile_name, pile| pile.empty? }
   end
 
   def take_deal(card, hand_size)

@@ -14,25 +14,35 @@ class GameFactory
     deck_factory: DeckFactory
   }.freeze
 
-  def self.build(state: {})
-    factory = new(state: state)
-    state.empty? ? factory.create_new_game : factory.reconstitute_from_state
+  def self.build
+    new.create_new_game
+  end
+
+  def self.from_json(json)
+    hash = JSON.parse(json)
+    deck = Pile.from_json(hash['draw_pile'].to_json)
+    players = hash['players'].map { |p| Player.from_json(p.to_json) }
+    hand_size = hash['hand_size']
+    # this works outside of:
+    #   valid plays
+    #   history
+    #   discard_pile
+    #   play_pile
+    Game.new(
+      deck: deck,
+      players: players,
+      hand_size: hand_size
+    )
   end
 
   def initialize(
-    state: {},
     options: DEFAULT_OPTIONS,
     classes: DEFAULT_CLASSES
   )
     @hand_size = options[:hand_size]
     @num_decks = options[:num_decks]
     @num_players = options[:num_players]
-    @state = state
     define_classes(classes)
-  end
-
-  def reconstitute_from_state
-    raise "You haven't written reconstitute_from_state yet"
   end
 
   def create_new_game

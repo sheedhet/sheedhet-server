@@ -1,7 +1,7 @@
 # class that represents a game of sheedhet, encapsulates an entire game for
 # storage in database
 #
-class Game # < ActiveRecord::Base
+class Game
   include JsonEquivalence
 
   VALID_CARD_PLAYS = {
@@ -31,7 +31,7 @@ class Game # < ActiveRecord::Base
   def initialize(deck:, players:, hand_size:, collection_type: Pile)
     @discard_pile = collection_type.new
     @draw_pile    = deck
-    @history      = [] # SHOULD THIS BE EXPOSED WITH AN ENUMERATOR??
+    @history      = []
     @play_pile    = collection_type.new
     @valid_plays  = []
     @players      = players
@@ -50,6 +50,7 @@ class Game # < ActiveRecord::Base
     { discard_pile: discard_pile,
       draw_pile: draw_pile,
       hand_size: hand_size,
+      history: history,
       players: players,
       play_pile: play_pile,
       valid_plays: valid_plays }
@@ -58,10 +59,42 @@ class Game # < ActiveRecord::Base
   def update_valid_plays
     @valid_plays =
       if started?
-        find_first_plays
-      else
         find_mid_game_plays
+      else
+        find_first_plays
       end
+  end
+
+  def dup
+    d = self.class.new(
+      deck: draw_pile.dup,
+      players: players.map(&:dup),
+      hand_size: hand_size
+    )
+    d.valid_plays = valid_plays.map(&:dup)
+    d.history = history.map(&:dup)
+    d.play_pile = play_pile.dup
+    d.discard_pile = discard_pile.dup
+    d
+  end
+
+  def filtered_for(player_position)
+    filtered_game = dup
+    filtered_game.draw_pile.turn_down
+    filtered_game.filter_players_for(player_position)
+    filtered_game.filter_plays_for(player_position)
+    filtered_game
+  end
+
+  def filter_plays_for(player_position)
+    valid_plays.reject! { |play| play.player.position != player_position }
+  end
+
+  def filter_players_for(player_position)
+    players.each do |player|
+      player.cards[:face_down].turn_down
+      player.cards[:in_hand].turn_down unless player.position == player_position
+    end
   end
 
   protected

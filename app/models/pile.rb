@@ -6,11 +6,11 @@ class Pile
   include JsonEquivalence
   extend Direction
 
-  DELEGATE_ARRAY_COMMANDS = %i( each select << ).freeze
+  DELEGATE_ARRAY_COMMANDS = %i(each select <<).freeze
 
   DELGATE_ARRAY_QUERIES = %i(
     all? count include? pop size + - sort rindex first last to_set sample empty?
-    group_by
+    group_by reverse
   ).freeze
 
   command DELEGATE_ARRAY_COMMANDS => :@data
@@ -30,6 +30,10 @@ class Pile
 
   def initialize(existing = [])
     @data = existing
+  end
+
+  def dup
+    self.class.new(@data.map(&:dup))
   end
 
   def as_json
@@ -52,33 +56,7 @@ class Pile
     group_by(&:face)
   end
 
-  # SMELLY
-  # def all_same?
-  #   by_values.uniq.size == 1
-  # end
-
-  # def sort
-  #   @data = data.sort { |x, y| x <=> y }
-  #   self
-  # end
-
-  # SMELLY
-  # def by_values
-  #   @data.map(&:value)
-  # end
-
-  # SMELLY
-  # def contains?(other)
-  #   other_set = other.to_set
-  #   other_set.subset?(to_set)
-  # end
-
-  # def get(operator, value)
-  #   return new unless [:==, :>=, :<=].include?(operator)
-  #   select { |card| card.value.public_send(operator, value) }
-  # end
-
-  # def get_all(face)
-  #   select { |card| card.face == face }
-  # end
+  def turn_down(turned_down: FaceDownCard)
+    @data.map! { turned_down.new }
+  end
 end
