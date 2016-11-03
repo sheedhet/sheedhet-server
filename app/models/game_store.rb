@@ -32,6 +32,11 @@ module GameStore
     record.first
   end
 
+  def self.load(game_id)
+    game_record = find(game_id)
+    GameFactory.from_json(game_record.json)
+  end
+
   def self.all
     GameStore.persistence.all
   end
