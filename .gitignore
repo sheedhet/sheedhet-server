@@ -19,3 +19,5 @@
 .DS_Store
 .vagrant
 .keep
+/public/packs
+/node_modules

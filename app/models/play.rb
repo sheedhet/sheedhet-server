@@ -9,6 +9,13 @@ class Play
     @hand = hand
   end
 
+  def as_json
+    {
+      player: player.position,
+      hand: hand.as_json
+    }
+  end
+
   def value
     first_card.value
   end

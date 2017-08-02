@@ -26,6 +26,7 @@ services:
     build: .
     ports:
       - '3000:3000'
+      - '8080:8080'
     volumes:
       - '.:/sheedhet_server'
     env_file:

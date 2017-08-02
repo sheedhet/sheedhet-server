@@ -20,8 +20,24 @@ class GamesController < ApplicationController
   #   GameStore.save(game)
   # end
 
+  def load_game
+    game = GameStore.load(params[:id])
+    game = game.filtered_for(params[:player_id].to_i) if params[:player_id].present?
+    game
+  end
+
   def show
-    @game = GameStore.find(params[:id])
+    game = load_game
+    @game = game.as_json.to_json
+    respond_to do |format|
+      format.html
+      format.json { render json: @game }
+    end
+  end
+
+  def filtered_for
+    unfiltered_game = GameStore.load(params[:game_id])
+    @game = unfiltered_game.filtered_for(params[:player_id])
   end
 
   # maybe roll this into a different route?
