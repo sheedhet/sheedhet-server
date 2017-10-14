@@ -57,14 +57,12 @@ class Player
     @position = position
   end
 
-  def dup
-    self.class.new(name: name.dup, position: position, existing: cards.dup)
-  end
-
   def as_json
-    { name: @name,
+    {
+      name: @name,
       position: @position,
-      cards: @cards.as_json }
+      cards: @cards.as_json
+    }.as_json
   end
 
   def take_deal(card, hand_size)

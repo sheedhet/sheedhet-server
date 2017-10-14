@@ -39,10 +39,6 @@ class Hand
     @data = empty_hand.merge(valid_containers)
   end
 
-  def dup
-    self.class.new(@data.keys.zip(@data.values.map(&:dup)).to_h)
-  end
-
   def as_json
     @data.map { |name, pile| [name, pile.as_json] }.to_h
   end

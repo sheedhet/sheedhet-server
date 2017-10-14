@@ -32,10 +32,6 @@ class Pile
     @data = existing
   end
 
-  def dup
-    self.class.new(@data.map(&:dup))
-  end
-
   def as_json
     @data.map(&:as_json)
   end

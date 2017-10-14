@@ -41,10 +41,6 @@ class Card
     @face = face
   end
 
-  def dup
-    self.class.new(suit: suit, face: face)
-  end
-
   def <=>(other)
     is_card = other.class == Card
     raise ArgumentError, "Can't compare Card to non-Card" unless is_card
