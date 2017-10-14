@@ -20,24 +20,13 @@ class GamesController < ApplicationController
   #   GameStore.save(game)
   # end
 
-  def load_game
-    game = GameStore.load(params[:id])
-    game = game.filtered_for(params[:player_id].to_i) if params[:player_id].present?
-    game
-  end
-
   def show
-    game = load_game
-    @game = game.as_json.to_json
-    respond_to do |format|
-      format.html
-      format.json { render json: @game }
+    game_hash = GameStore.load(params[:id]).as_json
+    if params[:player_id].present?
+      position = params[:player_id].to_i
+      game_hash = GameCensorer.new(game_hash).for_position(position)
     end
-  end
-
-  def filtered_for
-    unfiltered_game = GameStore.load(params[:game_id])
-    @game = unfiltered_game.filtered_for(params[:player_id])
+    @game = game_hash.to_json
   end
 
   # maybe roll this into a different route?

@@ -65,38 +65,6 @@ class Game
       end
   end
 
-  def dup
-    d = self.class.new(
-      deck: draw_pile.dup,
-      players: players.map(&:dup),
-      hand_size: hand_size
-    )
-    d.valid_plays = valid_plays.map(&:dup)
-    d.history = history.map(&:dup)
-    d.play_pile = play_pile.dup
-    d.discard_pile = discard_pile.dup
-    d
-  end
-
-  def filtered_for(player_position)
-    filtered_game = dup
-    filtered_game.draw_pile.turn_down
-    filtered_game.filter_players_for(player_position)
-    filtered_game.filter_plays_for(player_position)
-    filtered_game
-  end
-
-  def filter_plays_for(player_position)
-    valid_plays.reject! { |play| play.player.position != player_position }
-  end
-
-  def filter_players_for(player_position)
-    players.each do |player|
-      player.cards[:face_down].turn_down
-      player.cards[:in_hand].turn_down unless player.position == player_position
-    end
-  end
-
   protected
 
   def find_mid_game_plays
