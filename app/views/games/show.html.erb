@@ -1,1 +1,4 @@
-<div id="sheedhet_container" data-game=<%= @game %>></div>
+<div id="sheedhet_container"
+  data-game=<%= @game %>
+  <%= "data-position=" + @position.to_s if @position.present? %>>
+</div>

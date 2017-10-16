@@ -22,10 +22,9 @@ class GamesController < ApplicationController
 
   def show
     game_hash = GameStore.load(params[:id]).as_json
-    if params[:player_id].present?
-      position = params[:player_id].to_i
-      game_hash = GameCensorer.new(game_hash).for_position(position)
-    end
+    position = params[:player_id].try(:to_i)
+    game_hash = GameCensorer.new(game_hash).for_position(position).censor
+    @position = position
     @game = game_hash.to_json
   end
 

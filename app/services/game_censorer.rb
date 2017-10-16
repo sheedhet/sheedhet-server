@@ -5,7 +5,10 @@ class GameCensorer
 
   def for_position(position)
     @position = position
+    self
+  end
 
+  def censor
     game['players'] = censor_players
     game['draw_pile'] = turn_down_pile(game['draw_pile'])
     game['valid_plays'] = censor_plays
@@ -21,10 +24,10 @@ class GameCensorer
   end
 
   def censor_players
-    game['players'].map { |player| censor(player) }
+    game['players'].map { |player| censor_player(player) }
   end
 
-  def censor(player)
+  def censor_player(player)
     censored_player = turn_down_face_down(player)
     censored_player = turn_down_in_hand(player) if censor_for?(player)
     censored_player

@@ -11,7 +11,7 @@ class Play
 
   def as_json
     {
-      player: player.position,
+      position: player.position,
       hand: hand.as_json
     }
   end

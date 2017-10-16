@@ -5,16 +5,38 @@ import Pile from 'pile'
 export default class Game extends React.Component {
   constructor () {
     super()
-    let state_json = document.getElementById('sheedhet_container').dataset['game']
+    let container = document.getElementById('sheedhet_container')
+    let state_json = container.dataset['game']
+    this.position = container.dataset['position']
     let state = JSON.parse(state_json)
     this.state = state
+  }
+
+  opponents () {
+    if (this.position) {
+      return this.state.players.filter( player =>
+        player.position != this.position
+      );
+    } else {
+      return this.state.players.slice(1);
+    }
+  }
+
+  self () {
+    if (this.position) {
+      return this.state.players.find( player =>
+        player.position == this.position
+      );
+    } else {
+      return this.state.players[0];
+    }
   }
 
   render () {
     return (
       <div className="game">
         <div className="opponents">
-          {this.state.players.slice(1).map( (player) =>
+          {this.opponents().map( (player) =>
             <Player
               player={player}
               key={player.position}
@@ -33,7 +55,7 @@ export default class Game extends React.Component {
         </div>
         <div className="self">
           <Player
-            player={this.state.players[0]}
+            player={this.self()}
           />
         </div>
       </div>
