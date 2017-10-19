@@ -21,7 +21,9 @@ class GamesController < ApplicationController
   # end
 
   def show
-    game_hash = GameStore.load(params[:id]).as_json
+    game = GameStore.load(params[:id])
+    game.update_valid_plays
+    game_hash = game.as_json
     position = params[:player_id].try(:to_i)
     game_hash = GameCensorer.new(game_hash).for_position(position).censor
     @position = position

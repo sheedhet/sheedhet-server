@@ -20,7 +20,11 @@ class GameCensorer
   attr_reader :game, :position
 
   def censor_plays
-    game['valid_plays'].select { |p| p['player'] == position }
+    game['valid_plays'].each do |play|
+      unless play['position'] == position
+        play['hand'] = {}
+      end
+    end
   end
 
   def censor_players
