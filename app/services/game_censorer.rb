@@ -21,9 +21,7 @@ class GameCensorer
 
   def censor_plays
     game['valid_plays'].each do |play|
-      unless play['position'] == position
-        play['hand'] = {}
-      end
+      play['hand'] = {} unless play['position'] == position
     end
   end
 
