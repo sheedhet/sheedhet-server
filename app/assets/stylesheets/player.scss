@@ -1,0 +1,53 @@
+.hand {
+  display: flex;
+  flex-direction: column;
+
+  .pile {
+    .in_hand {
+      order: 1;
+    }
+    .face_up {
+      order: 3;
+    }
+    .face_down {
+      order: 2;
+    }
+  }
+}
+
+.pile.face_down {
+  order: 2;
+  z-index: 0;
+}
+.pile.face_up {
+  order: 3;
+  z-index: 1;
+  margin-top: -4.5em;
+}
+
+.self {
+  justify-self: center;
+  .pile.face_down {
+    order: 2;
+    margin-top: -9em;
+  }
+  .pile.face_up {
+    order: 1;
+    margin-top: 0;
+  }
+  .pile.in_hand {
+    order: 3;
+    margin-top: 0;
+  }
+}
+
+.player.has_plays {
+  .player_name {
+    color: yellow;
+  }
+}
+
+
+.player_name {
+  font-family: 'Ubuntu Condensed', sans-serif;
+}

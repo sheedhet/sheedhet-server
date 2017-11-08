@@ -10,6 +10,7 @@ export default function Pile(props) {
           index={i}
           key={i}
           pile_size={props.contents.length}
+          playable={props.plays.includes(card_string)}
         />
       )}
     </div>

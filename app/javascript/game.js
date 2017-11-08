@@ -39,6 +39,11 @@ export default class Game extends React.Component {
           {this.opponents().map( (player) =>
             <Player
               player={player}
+              plays={
+                this.state.valid_plays.filter(play =>
+                  play.position == player.position
+                )
+              }
               key={player.position}
             />
           )}
@@ -47,15 +52,22 @@ export default class Game extends React.Component {
           <Pile
             pile_name="draw"
             contents={this.state.draw_pile}
+            plays={[]}
           />
           <Pile
             pile_name="discard"
             contents={this.state.discard_pile}
+            plays={[]}
           />
         </div>
         <div className="self">
           <Player
             player={this.self()}
+            plays={
+              this.state.valid_plays.filter(play =>
+                play.position == this.self().position
+              )
+            }
           />
         </div>
       </div>

@@ -33,20 +33,13 @@ export default function Card(props) {
   const random_skew_angle = () => {
     return random_angle(-30.0, 30.0) / 15.0
   }
-  // const fan_angle = () => {
-  //   if (props.pile_size == 1) {
-  //     return 0;
-  //   }
-  //   const angle_delta = 90 / props.pile_size
-  //   return -45 + (angle_delta / 2) + (props.index * angle_delta)
-  // }
   const card_style = {
     transform: 'rotate(' + random_skew_angle() + 'deg)'
   }
-
+  const playable = props.playable ? "playable" : ""
   return (
     <div
-      className={['card',suit,rank].join(' ')}
+      className={['card', suit, rank, playable].join(' ')}
       style={card_style}
       onClick={null/*() => this.props.onClick() */}
       data-index={props.index}
