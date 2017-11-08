@@ -21,7 +21,7 @@ class GameCensorer
 
   def censor_plays
     game['valid_plays'].each do |play|
-      play['hand'] = {} unless play['position'] == position
+      play['hand'] = {} unless play['position'].to_i == position
     end
   end
 
@@ -36,7 +36,7 @@ class GameCensorer
   end
 
   def censor_for?(player)
-    player['position'] != position
+    player['position'].to_i != position
   end
 
   def turn_down_face_down(player)

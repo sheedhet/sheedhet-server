@@ -13,7 +13,7 @@ class Play
     {
       position: player.position,
       hand: hand.as_json
-    }
+    }.as_json
   end
 
   def value
