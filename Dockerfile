@@ -20,12 +20,12 @@ MAINTAINER Nick Janetakis <nick.janetakis@gmail.com>
 
 RUN curl -sL https://deb.nodesource.com/setup_7.x | bash -
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
-      build-essential nodejs libpq-dev
+      build-essential nodejs libpq-dev curl apt-transport-https
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
-RUN apt-get update && apt-get install yarn
+RUN apt-get update && apt-get install -qq -y --no-install-recommends yarn
 
 # Ensure that our apt package list is updated and install a few
 # packages to ensure that we can compile assets (nodejs) and
