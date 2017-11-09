@@ -35,7 +35,7 @@ gem 'pry-rails'
 gem 'sass-rails', '~> 5.0'
 
 # Use Uglifier as the compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+# gem 'uglifier', '>= 1.3.0'
 
 # Use Turbolinks. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
