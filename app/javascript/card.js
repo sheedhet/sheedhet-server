@@ -36,13 +36,20 @@ export default function Card(props) {
   const card_style = {
     transform: 'rotate(' + random_skew_angle() + 'deg)'
   }
-  const playable = props.playable ? "playable" : ""
+  const in_plays = () => {
+    if (props.in_plays.length) {
+      const x = props.in_plays.map((x) => 'play' + x ).join(' ')
+      return x
+    } else {
+      return ''
+    }
+  }
   return (
     <div
-      className={['card', suit, rank, playable].join(' ')}
+      className={['card', suit, rank, in_plays()].join(' ')}
       style={card_style}
-      onClick={null/*() => this.props.onClick() */}
       data-index={props.index}
+      data-string={props.card_string}
     >
       <div className={face_up}></div>
     </div>

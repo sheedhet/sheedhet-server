@@ -18,7 +18,6 @@ class Hand
       json_pile = pile.as_json.to_json
       new_pile = container.from_json(json_pile)
       result[pile_name.to_sym] = new_pile
-      result
     end
     new(existing, container, as_hash.keys)
   end
@@ -40,7 +39,9 @@ class Hand
   end
 
   def as_json
-    @data.map { |name, pile| [name, pile.as_json] }.to_h
+    @data.each_with_object({}) do |(name, pile), result_hash|
+      result_hash[name] = pile.as_json unless pile.empty?
+    end
   end
 
   def +(other)

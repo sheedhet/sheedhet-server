@@ -1,4 +1,4 @@
 <div id="sheedhet_container"
-  data-game=<%= @game %>
+  data-game=<%= @game.html_safe %>
   <%= "data-position=" + @position.to_s if @position.present? %>>
 </div>

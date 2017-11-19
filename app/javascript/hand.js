@@ -10,10 +10,13 @@ export default function Hand(props) {
           pile_name={pile_name}
           key={pile_name}
           plays={
-            props.plays.reduce( (result, play) =>
-              result.concat(play.hand[pile_name]),
-              []
-            )
+            props.plays.reduce( (result, play) => {
+              if (play.hand[pile_name]) {
+                return result.concat(play.hand[pile_name])
+              } else {
+                return result
+              }
+            }, [])
           }
         />
       )}

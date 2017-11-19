@@ -27,6 +27,7 @@ class GamesController < ApplicationController
     position = params[:player_id].try(:to_i)
     game_hash = GameCensorer.new(game_hash).for_position(position).censor
     @position = position
+    game_hash['id'] = params[:id] if params[:id].present?
     @game = game_hash.to_json
   end
 

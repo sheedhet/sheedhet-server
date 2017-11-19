@@ -70,7 +70,7 @@ class Player
   end
 
   def plays
-    cards.plays.map { |hand| Play.new(player: self, hand: hand) }
+    cards.plays.map { |hand| Play.new(position: position, hand: hand) }
   end
 
   def add_to(target:, subject:)

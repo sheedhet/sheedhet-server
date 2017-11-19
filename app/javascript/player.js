@@ -1,6 +1,7 @@
 import React from 'react'
 import Hand from 'hand'
 
+import Play from 'play'
 
 export default function Player(props) {
   let has_plays = props.plays.length > 0 ? " has_plays" : ""
@@ -11,6 +12,15 @@ export default function Player(props) {
           cards={props.player.cards}
           plays={props.plays}
         />
+      {props.plays.map( (play, i) =>
+        <Play
+          position={play.position}
+          clickCallback={props.clickCallback}
+          hand={play.hand}
+          key={i}
+          index={i}
+        />
+      )}
     </div>
   );
 }

@@ -3,15 +3,25 @@ class Play
   include JsonEquivalence
 
   attr_reader :player, :hand
+  attr_reader :position, :hand
 
   def initialize(player:, hand:)
     @player = player
+  def self.from_json(json, container: Hand)
+    hash = JSON.parse(json)
+    position = hash['position']
+    hand = container.from_json(hash['hand'])
+    new(position: position, hand: hand)
+  end
+
+  def initialize(position:, hand:)
+    @position = position
     @hand = hand
   end
 
   def as_json
     {
-      position: player.position,
+      position: position,
       hand: hand.as_json
     }.as_json
   end
