@@ -20,10 +20,10 @@ module GameStore
   #   @model || GameStore.model = Game
   # end
 
-  def self.save(game)
-    record = GameStore.persistence.new(id: game.id, json: game.to_json)
-    # validation?
-    record.save!
+  def self.save(game, id = nil)
+    save_id = id || game.id
+    record = GameStore.persistence.find(save_id)
+    record.update!(json: game.to_json)
   end
 
   def self.find(game_id)
@@ -33,7 +33,7 @@ module GameStore
   end
 
   def self.load(game_id)
-    game_record = find(game_id)
+    game_record = GameStore.find(game_id)
     GameFactory.from_json(game_record.json)
   end
 
