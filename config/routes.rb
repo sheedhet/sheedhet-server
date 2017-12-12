@@ -16,4 +16,10 @@ Rails.application.routes.draw do
   get 'games/destroy'
 
   root 'pages#home'
+
+  namespace :api do
+    get '/games/:id', to: 'games#show'
+    get '/games/:id/players/:player_id', to: 'games#show'
+    put '/games/:id/players/:player_id', to: 'games#update'
+  end
 end
