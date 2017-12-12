@@ -1,15 +1,36 @@
 import React from 'react'
 import Player from 'player'
 import Pile from 'pile'
+import Sheedhet from 'sheedhet'
 
 export default class Game extends React.Component {
   constructor () {
     super()
     let container = document.getElementById('sheedhet_container')
     let state_json = container.dataset['game']
-    this.position = container.dataset['position']
     let state = JSON.parse(state_json)
     this.state = state
+    this.position = container.dataset['position']
+    this.id = container.dataset['game_id']
+    this.sheedhet = new Sheedhet(this.id, this.position, 'http://0.0.0.0:3000')
+  }
+
+  playClickHandler (position, hand) {
+    console.log("play clicked: ", position, hand)
+    let matching_valid_plays = this.state.valid_plays.filter((play) => {
+      let a = JSON.stringify(play.hand)
+      let b = JSON.stringify(hand)
+      return play.position == position && a == b
+    })
+    if (matching_valid_plays.length > 0) {
+      let ply = {'position': position, 'hand': hand}
+      let plyson = JSON.stringify(ply)
+      console.log('valid play', ply)
+      let new_state = this.sheedhet.attemptPlay(ply)
+      this.setState(new_state)
+    } else {
+      console.log('invalid play')
+    }
   }
 
   opponents () {
@@ -67,6 +88,9 @@ export default class Game extends React.Component {
               this.state.valid_plays.filter(play =>
                 play.position == this.self().position
               )
+            }
+            clickCallback={
+              hand => this.playClickHandler(this.self().position, hand)
             }
           />
         </div>
