@@ -32,7 +32,12 @@ class GameFactory
       deck: deck,
       players: players,
       hand_size: hand_size
-    )
+    ).tap do |game|
+      game.history = hash['history'].map { |p| Play.from_json(p.to_json) }
+      game.valid_plays = hash['valid_plays'].map { |p| Play.from_json(p.to_json) }
+      game.play_pile = Pile.from_json(hash['play_pile'].to_json)
+      game.discard_pile = Pile.from_json(hash['discard_pile'].to_json)
+    end
   end
 
   def initialize(
