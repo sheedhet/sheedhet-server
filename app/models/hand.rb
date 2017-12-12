@@ -66,6 +66,20 @@ class Hand
     self
   end
 
+  def -(other)
+    raise ArgumentError, "Can't subtract from non-Hand" unless other.is_a?(Hand)
+    difference = other.each_with_object({}) do |(pile_name, pile), hash|
+      hash[pile_name] = [pile_name] - pile
+    end
+    new(difference)
+  end
+
+  def remove(hand)
+    hand.each do |pile_name, cards|
+      @data[pile_name] = @data[pile_name] - cards
+    end
+  end
+
   def plays
     initial_plays = plays_from_active_pile
     if initial_plays.size == 1
@@ -82,6 +96,10 @@ class Hand
     @data.reject { |_pile_name, pile| pile.empty? }
   end
 
+  def all_cards
+    @data.values.reduce(:+)
+  end
+
   protected
 
   def plays_from_active_pile
@@ -89,7 +107,7 @@ class Hand
     return {} if active_pile.nil?
     grouped_by_face = active_pile.group_by_face
     grouped_by_face.map do |face, cards|
-      [face, Hand.new(pile_name => cards)]
+      [face, Hand.new(pile_name => @container.new(cards))]
     end.to_h
   end
 

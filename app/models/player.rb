@@ -78,6 +78,11 @@ class Player
     self
   end
 
+  def remove(hand)
+    cards.remove(hand)
+    self
+  end
+
   def get_playable(operator:, value:)
     cards.get_playable(operator: operator, value: value)
   end

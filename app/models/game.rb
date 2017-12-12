@@ -56,7 +56,7 @@ class Game
       valid_plays: valid_plays }
   end
 
-  def update_valid_plays
+  def update_valid_plays!
     @valid_plays =
       if started?
         find_mid_game_plays
@@ -65,16 +65,15 @@ class Game
       end
   end
 
-  protected
+  # protected
 
   def find_mid_game_plays
     card_to_play_on = play_pile.reverse.find { |c| c.face != '3' }
-
-    players_who_can_play.each do |player|
-      plays = player.plays
-      valid_plays[player] = plays.select do |desc, _|
-        VALID_CARD_PLAYS[card_to_play_on.face].call(desc)
-      end
+    quick_plays = last_to_play.plays.select do |play|
+      play.face == last_turn.face
+    end
+    quick_plays + next_to_play.plays.select do |play|
+      VALID_CARD_PLAYS[card_to_play_on.face].call(play.first_card)
     end
   end
 
@@ -88,20 +87,26 @@ class Game
     all_min_plays.select { |play| play.value == min_value_play.value }
   end
 
-  def players_who_can_play
-    return players if history.empty?
-    last_turn = history.last
-    last_to_play = last_turn.player
-    next_to_play = players.select do |player|
-      player.position = last_to_play.position.next % players.size
+  def last_turn
+    history.last
+  end
+
+  def last_to_play
+    players.find do |player|
+      player.position == last_turn.position
     end
-    [last_to_play, next_to_play]
+  end
+
+  def next_to_play
+    players.find do |player|
+      player.position == last_to_play.position.next % players.size
+    end
   end
 
   def started?
     max_possible_swaps = players.size
     return true if history.size > max_possible_swaps
-    turns_grouped_by_player = history.group_by(&:player)
+    turns_grouped_by_player = history.group_by(&:position)
     turns_grouped_by_player.any? { |_, turns| turns.size > 1 }
   end
 end

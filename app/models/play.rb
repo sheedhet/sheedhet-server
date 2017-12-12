@@ -2,15 +2,12 @@
 class Play
   include JsonEquivalence
 
-  attr_reader :player, :hand
   attr_reader :position, :hand
 
-  def initialize(player:, hand:)
-    @player = player
   def self.from_json(json, container: Hand)
     hash = JSON.parse(json)
     position = hash['position']
-    hand = container.from_json(hash['hand'])
+    hand = container.from_json(hash['hand'].to_json)
     new(position: position, hand: hand)
   end
 
@@ -39,7 +36,11 @@ class Play
   end
 
   def first_card
-    _pile_name, cards = non_empty_piles.first
+    (_pile_name, cards) = non_empty_piles.first
     cards.first
+  end
+
+  def just_cards
+    just_cards # haha what
   end
 end
