@@ -71,14 +71,16 @@ export default class Game extends React.Component {
         </div>
         <div className="community">
           <Pile
+            pile_name="play"
+            contents={this.state.play_pile}
+          />
+          <Pile
             pile_name="draw"
             contents={this.state.draw_pile}
-            plays={[]}
           />
           <Pile
             pile_name="discard"
             contents={this.state.discard_pile}
-            plays={[]}
           />
         </div>
         <div className="self">
