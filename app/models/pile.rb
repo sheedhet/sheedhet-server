@@ -9,7 +9,7 @@ class Pile
   DELEGATE_ARRAY_COMMANDS = %i(each select <<).freeze
 
   DELGATE_ARRAY_QUERIES = %i(
-    all? count include? pop size sort rindex first last to_set sample empty?
+    all? count include? pop size sort rindex first last sample empty?
     group_by reverse
   ).freeze
 
@@ -79,5 +79,9 @@ class Pile
 
   def turn_down(turned_down: FaceDownCard)
     @data.map! { turned_down.new }
+  end
+
+  def all
+    @data
   end
 end
