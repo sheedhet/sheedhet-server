@@ -70,7 +70,9 @@ class Player
   end
 
   def plays
-    cards.plays.map { |hand| Play.new(position: position, hand: hand) }
+    cards.plays.map do |hand|
+      Play.new(position: position, hand: hand, destination: :play_pile)
+    end
   end
 
   def add_to(target:, subject:)
