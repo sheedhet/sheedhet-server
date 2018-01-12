@@ -38,7 +38,7 @@ export default function Card(props) {
   }
   const in_plays = () => {
     if (props.in_plays.length) {
-      const x = props.in_plays.map((x) => 'play' + x ).join(' ')
+      const x = props.in_plays.map((y) => 'play' + y ).join(' ')
       return x
     } else {
       return ''
