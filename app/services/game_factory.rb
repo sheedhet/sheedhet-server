@@ -23,11 +23,6 @@ class GameFactory
     deck = Pile.from_json(hash['draw_pile'].to_json)
     players = hash['players'].map { |p| Player.from_json(p.to_json) }
     hand_size = hash['hand_size']
-    # this works outside of:
-    #   valid plays
-    #   history
-    #   discard_pile
-    #   play_pile
     Game.new(
       deck: deck,
       players: players,
@@ -55,6 +50,7 @@ class GameFactory
     players = create_players
     game = @game_class.new(deck: deck, players: players, hand_size: @hand_size)
     @card_dealer.deal(game)
+    game.update_valid_plays!
     game
   end
 
