@@ -1,11 +1,11 @@
 class GameCensorer
-  def initialize(game_hash)
-    @game = game_hash
+  def self.censor(game:, for_position:)
+    GameCensorer.new(game: game, position: for_position).censor
   end
 
-  def for_position(position)
+  def initialize(game:, position:)
+    @game = game.as_json
     @position = position
-    self
   end
 
   def censor

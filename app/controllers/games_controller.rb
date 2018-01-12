@@ -8,12 +8,14 @@ class GamesController < ApplicationController
   end
 
   def show
-    game = GameStore.load(params[:id])
-    game_hash = game.as_json
-    position = params[:player_id].try(:to_i)
-    game_hash = GameCensorer.new(game_hash).for_position(position).censor
-    @position = position
     @game_id = params[:id]
+    game = begin
+      GameStore.load(@game_id)
+    rescue GameStore::GameNotFound
+      GameFactory.build
+    end
+    @position = params[:player_id].try(:to_i)
+    game_hash = GameCensorer.censor(game: game, for_position: @position)
     @game = game_hash.to_json
   end
 
