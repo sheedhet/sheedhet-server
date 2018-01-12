@@ -3,16 +3,16 @@
 class Card
   include JsonEquivalence
 
-  SUITS = %w(c d h s).freeze
-  FACES = %w(a 2 3 4 5 6 7 8 9 10 j q k).freeze
+  SUITS = %i(c d h s).freeze
+  FACES = %i(a 2 3 4 5 6 7 8 9 10 j q k).freeze
   VALUES = {
-    'j' => 11,
-    'q' => 12,
-    'k' => 13,
-    'a' => 14,
-    '2' => 15,
-    '3' => 15,
-    '10' => 15
+    j: 11,
+    q: 12,
+    k: 13,
+    a: 14,
+    :'2' => 15,
+    :'3' => 15,
+    :'10' => 15
   }.freeze
 
   attr_reader :suit, :face
@@ -34,11 +34,11 @@ class Card
     new(suit: suit, face: json_string)
   end
 
-  def initialize(suit: self.class.suits.sample, face: self.class.faces.sample)
+  def initialize(suit: Card.suits.sample, face: Card.faces.sample)
     raise ArgumentError, "Invalid suit: #{suit}" unless SUITS.include?(suit)
     raise ArgumentError, "Invalid face: #{face}" unless FACES.include?(face)
-    @suit = suit
-    @face = face
+    @suit = suit.to_sym
+    @face = face.to_sym
   end
 
   def <=>(other)
@@ -50,7 +50,7 @@ class Card
   end
 
   def value
-    VALUES[face] || face.to_i
+    VALUES[face] || face.to_s.to_i
   end
 
   def as_json
