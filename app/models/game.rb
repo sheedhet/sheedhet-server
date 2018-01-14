@@ -47,41 +47,67 @@ class Game
   end
 
   def game_state
-    { discard_pile: discard_pile,
+    {
+      discard_pile: discard_pile,
       draw_pile: draw_pile,
       hand_size: hand_size,
       history: history,
       players: players,
       play_pile: play_pile,
-      valid_plays: valid_plays }
+      valid_plays: valid_plays
+    }
   end
 
   def update_valid_plays!
     @valid_plays =
       if started?
-        find_mid_game_plays
+        mid_game_plays
       else
-        find_first_plays
+        opening_plays
       end
   end
 
   # protected
 
-  def find_mid_game_plays
-    card_to_play_on = play_pile.reverse.find { |c| c.face != '3' }
-    quick_plays = last_to_play.plays.select do |play|
-      play.face == last_turn.face
+  def mid_game_plays
+    mid_game_plays = valid_plays_for_next_player
+    if last_turn.hand.container_names == [:draw_pile]
+      mid_game_plays << last_to_play.plays.select do |play|
+        play.face == last_turn.face
+      end
     end
-    quick_plays + next_to_play.plays.select do |play|
-      VALID_CARD_PLAYS[card_to_play_on.face].call(play.first_card)
-    end
+    mid_game_plays
   end
 
-  def find_first_plays
-    all_min_plays = players.each_with_object([]) do |player, result|
+  def valid_plays_for_next_player
+    mid_game_plays = next_to_play.plays.select do |play|
+      card_valid_to_play?(play.first_card)
+    end
+    mid_game_plays.push(pick_up_the_pile_play)
+  end
+
+  def card_valid_to_play?(card)
+    return true if card_to_beat.nil?
+    VALID_CARD_PLAYS[card_to_beat.face].call(card)
+  end
+
+  def card_to_beat
+    play_pile.reverse.find { |c| c.face != '3' }
+  end
+
+  def pick_up_the_pile_play
+    Play.new(
+      position: next_to_play.position,
+      hand: Hand.new({ play_pile: play_pile.all }, Pile, [:play_pile]),
+      destination: :in_hand
+    )
+  end
+
+  def opening_plays
+    all_min_plays = players.each_with_object([]) do |player, min_plays|
       plays = player.plays
       smallest_play = plays.min_by(&:value)
-      result << smallest_play
+      min_plays << smallest_play
     end
     min_value_play = all_min_plays.min_by(&:value)
     all_min_plays.select { |play| play.value == min_value_play.value }
