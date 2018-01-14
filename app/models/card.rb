@@ -31,7 +31,7 @@ class Card
 
   def self.from_json(json_string)
     suit = json_string.slice!(-1)
-    new(suit: suit, face: json_string)
+    new(suit: suit.to_sym, face: json_string.to_sym)
   end
 
   def initialize(suit: Card.suits.sample, face: Card.faces.sample)
