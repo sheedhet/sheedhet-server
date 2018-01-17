@@ -20,16 +20,24 @@ module GameStore
   #   @model || GameStore.model = Game
   # end
 
-  def self.save(game, id = nil)
-    save_id = id || game.id
-    record = GameStore.persistence.find(save_id)
-    record.update!(json: game.to_json)
+  def self.new(json: nil)
+    GameStore.persistence.new(json: json)
+  end
+
+  def self.save(game_object, id = nil)
+    record = begin
+      GameStore.find(id)
+    rescue GameNotFound
+      GameStore.new
+    end
+    record.json = game_object.to_json
+    record.save!
   end
 
   def self.find(game_id)
-    record = GameStore.persistence.where(id: game_id)
-    raise GameNotFound if record.empty?
-    record.first
+    records = GameStore.persistence.where(id: game_id)
+    raise GameNotFound if records.empty?
+    records.first
   end
 
   def self.load(game_id)
