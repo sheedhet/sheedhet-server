@@ -9,7 +9,7 @@
 }
 
 .pile {
-  display:flex;
+  display: flex;
   flex-direction: row;
   flex-shrink: 0;
   .card {
@@ -32,14 +32,34 @@
 
 .community {
   justify-self: center;
+  display:flex;
+  flex-direction: row;
+
 }
 
-.pile.draw {
-  .card {
-    margin-left: -0.71em;
-    font-size: 5rem;
-    &:first-child {
-      margin-left: 0;
+.pile {
+  &.draw, &.discard, &.play {
+    .card {
+      font-size: 5rem;
+      &:first-child {
+        margin-left: 0;
+      }
     }
+  }
+}
+
+.discard, .play {
+  .card {
+    margin-left: -0.5em;
+  }
+}
+
+.draw .card {
+  margin-left: -0.71em;
+}
+
+.pile.play {
+  .card {
+    font-size: 5rem;
   }
 }
