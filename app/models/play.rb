@@ -50,4 +50,9 @@ class Play
   def pick_up?
     hand[:draw_pile].present?
   end
+
+  def contains?(other)
+    raise ArgumentError unless other.is_a?(Play)
+    hand.contains?(other.hand)
+  end
 end

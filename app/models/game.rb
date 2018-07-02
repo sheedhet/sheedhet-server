@@ -5,17 +5,17 @@ class Game
   include JsonEquivalence
 
   VALID_CARD_PLAYS = {
-    '2' => -> { true },
-    '4' => -> { true },
-    '5' => ->(c) { c.value >= 5 },
-    '6' => ->(c) { c.value >= 6 },
-    '7' => ->(c) { c.value <= 7 || %w(2 3).include?(c.face) },
-    '8' => ->(c) { c.value >= 8 },
-    '9' => ->(c) { c.value >= 9 },
-    'j' => ->(c) { c.value >= 11 },
-    'q' => ->(c) { c.value >= 12 },
-    'k' => ->(c) { c.value >= 13 },
-    'a' => ->(c) { c.value >= 14 }
+    :'2' => -> { true },
+    :'4' => -> { true },
+    :'5' => ->(c) { c.value >= 5 },
+    :'6' => ->(c) { c.value >= 6 },
+    :'7' => ->(c) { c.value <= 7 || %w(2 3).include?(c.face) },
+    :'8' => ->(c) { c.value >= 8 },
+    :'9' => ->(c) { c.value >= 9 },
+    j: ->(c) { c.value >= 11 },
+    q: ->(c) { c.value >= 12 },
+    k: ->(c) { c.value >= 13 },
+    a: ->(c) { c.value >= 14 }
   }.freeze
 
   attr_accessor :discard_pile,
@@ -59,22 +59,22 @@ class Game
   end
 
   def update_valid_plays!
-    @valid_plays =
-      if started?
-        mid_game_plays
-      else
-        opening_plays
-      end
+    @valid_plays = valid_swaps + (started? ? mid_game_plays : opening_plays)
+    # this method needs to be smarter, its more than tertiary:
+    #  - swaps almost happen in parallel, but they also block turns
+    #  - i think opening plays only describes one play, a special case
+    #  - evaluate swaps independantly of turns list
+    #  - add an easy optimization to checking for swaps, only check first x
+
+    # i feel like i already completed the above, where did that go?
   end
 
   # protected
 
   def mid_game_plays
     mid_game_plays = valid_plays_for_next_player
-    if last_turn.hand.container_names == [:draw_pile]
-      mid_game_plays << last_to_play.plays.select do |play|
-        play.face == last_turn.face
-      end
+    mid_game_plays += last_to_play.plays.select do |play|
+      play.face == last_turn[:play].face
     end
     mid_game_plays
   end
@@ -103,6 +103,18 @@ class Game
     )
   end
 
+  def swap_play_for_position(position)
+    player = players.find { |p| p.position == position }
+    Play.new(
+      position: position,
+      hand: Hand.new(
+        face_up: player.cards[:face_up],
+        in_hand: player.cards[:in_hand]
+      ),
+      destination: :swap
+    )
+  end
+
   def opening_plays
     all_min_plays = players.each_with_object([]) do |player, min_plays|
       plays = player.plays
@@ -113,13 +125,22 @@ class Game
     all_min_plays.select { |play| play.value == min_value_play.value }
   end
 
+  def valid_swaps
+    swaps, plays = history.partition { |turn| turn.play.destination == :swap }
+    swapped_positions = swaps.map { |turn| turn.play.position }
+    played_positions = plays.map { |turn| turn.play.position }
+    all_positions = (0..players.size.pred).to_a
+    unswapped_positions = all_positions - swapped_positions - played_positions
+    unswapped_positions.map { |position| swap_play_for_position(position) }
+  end
+
   def last_turn
     history.last
   end
 
   def last_to_play
     players.find do |player|
-      player.position == last_turn.position
+      player.position == last_turn[:play].position
     end
   end
 
@@ -129,10 +150,11 @@ class Game
     end
   end
 
+  def swaps_completed?
+    history.count { |turn| turn[:play].destination == :swap } == players.size
+  end
+
   def started?
-    max_possible_swaps = players.size
-    return true if history.size > max_possible_swaps
-    turns_grouped_by_player = history.group_by(&:position)
-    turns_grouped_by_player.any? { |_, turns| turns.size > 1 }
+    history.reject { |turn| turn[:play].destination == :swap }.any?
   end
 end

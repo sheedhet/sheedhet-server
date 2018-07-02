@@ -12,7 +12,9 @@ class GamesController < ApplicationController
     game = begin
       GameStore.load(@game_id)
     rescue GameStore::GameNotFound
-      GameFactory.build
+      new_game = GameFactory.build
+      GameStore.save(json: new_game.to_json, id: params[:id])
+      new_game
     end
     @position = params[:player_id].try(:to_i)
     game_hash = GameCensorer.censor(game: game, for_position: @position)

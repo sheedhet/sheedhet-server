@@ -30,7 +30,7 @@ module GameStore
     rescue GameNotFound
       GameStore.new
     end
-    record.json = game_object.to_json
+    record.json = game_object
     record.save!
   end
 

@@ -9,12 +9,36 @@ class PlayExecutor
   end
 
   def valid?
-    game.valid_plays.any? { |valid_play| valid_play == play }
+    if play.destination == :swap
+      valid_swap?
+    else
+      game.valid_plays.any? { |valid_play| valid_play.contains?(play) }
+      # #############################################################
+      # I think with the inclusion of a :contains? chain of methods,
+      # we're good to go with the valid play detection and perhaps
+      # this is good enough to get us on to whatever the next step
+      # is. Unfortunately it looks like our docker aint working no
+      # more so maybe now's the time to do a full migration to the
+      # latest and greatest platform tech?!
+      # - new rails
+      # - new docker bs
+      # - new webpacker bs
+      # - new etc bs
+      # #############################################################
+    end
+  end
+
+  def valid_swap?
+    game.valid_plays.any? do |valid_play|
+      valid_play.position == play.position
+    end
+    [:in_hand, :face_up].all? do |pile_name|
+      player.hand[pile_name].contains?(play.hand[pile_name])
+    end
   end
 
   def execute!
     raise InvalidPlayError unless valid?
-    remove_cards_from_source
     send_cards_to_destination
     refill_hand
     clear_play_pile if four_of_a_kind_in_play?
@@ -34,8 +58,20 @@ class PlayExecutor
     when :play_pile
       play_from_player
     when :discard_pile
-      clear_pile
+      clear_play_pile
+    when :swap
+      perform_swap
     end
+  end
+
+  def perform_swap
+    # mark equal number of cards in hand and face up, swap their positions
+    from_face_up = play.hand[:face_up]
+    from_in_hand = play.hand[:in_hand]
+    player.hand[:face_up] -= from_face_up
+    player.hand[:face_up] += from_in_hand
+    player.hand[:in_hand] -= from_in_hand
+    player.hand[:in_hand] += from_face_up
   end
 
   def pickup_play_pile

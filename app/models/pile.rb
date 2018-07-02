@@ -24,8 +24,8 @@ class Pile
     new(array_as_json, content)
   end
 
-  def self.random(size = 4)
-    new(Array.new(size) { Card.new })
+  def self.random(size = 4, content = Card)
+    new(Array.new(size) { content.new })
   end
 
   def initialize(existing = [], content = Card)
@@ -34,12 +34,13 @@ class Pile
   end
 
   def as_json
-    @data.map(&:as_json)
+    data.map(&:as_json)
   end
 
   def -(other)
     raise ArgumentError, "Can't subtract non-Pile" unless other.is_a?(Pile)
-    new_data = @data.dup
+    raise ArgumentError, "Can't subtract, not in Pile" unless contains?(other)
+    new_data = data.dup
     other.as_json.each do |card_to_remove|
       remove_from_index = new_data.find_index do |card|
         card.as_json == card_to_remove
@@ -51,7 +52,7 @@ class Pile
 
   def +(other)
     raise ArgumentError, "Can't add non-Pile" unless other.is_a?(Pile)
-    new_data = @data.dup
+    new_data = data.dup
     other.as_json.each do |card_to_add|
       new_data.push(@content.from_json(card_to_add))
     end
@@ -59,17 +60,17 @@ class Pile
   end
 
   def add(card)
-    @data << card
+    data << card
     self
   end
 
   def remove(card)
     wrong_class_error_msg = "Can't remove non-#{@content.class}"
     raise ArgumentError, wrong_class_error_msg unless card.is_a?(@content)
-    remove_index = @data.find_index(card)
+    remove_index = data.find_index(card)
     not_found_error_msg = "#{@content.class} #{card} not found"
     raise ArgumentError, not_found_error_msg if remove_index.nil?
-    @data.slice!(remove_index)
+    data.slice!(remove_index)
     self
   end
 
@@ -78,10 +79,26 @@ class Pile
   end
 
   def turn_down(turned_down: FaceDownCard)
-    @data.map! { turned_down.new }
+    data.map! { turned_down.new }
   end
 
   def all
-    @data
+    data
   end
+
+  def contains?(other)
+    raise ArgumentError, "Can't compare non-Pile" unless other.is_a?(Pile)
+    grouped_self = group_by(&:as_json)
+    grouped_other = other.group_by(&:as_json)
+    grouped_other.each do |card, collection|
+      card_not_found = grouped_self[card].nil?
+      not_enough_of_card = grouped_self[card].size <= collection.size
+      return false if card_not_found || not_enough_of_card
+    end
+    true
+  end
+
+  protected
+
+  attr_reader :data
 end
