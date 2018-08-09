@@ -13,9 +13,5 @@ RUN mkdir /sheedhet-server
 WORKDIR /sheedhet-server
 COPY Gemfile /sheedhet-server/Gemfile
 COPY Gemfile.lock /sheedhet-server/Gemfile.lock
-# COPY docker-web-entry.sh /tmp/docker-web-entry.sh
-# COPY docker-webpacker-entry.sh /tmp/docker-webpacker-entry.sh
-# RUN chmod 755 /tmp/docker-webpacker-entry.sh
-# RUN chmod 755 /tmp/docker-web-entry.sh
 VOLUME /sheedhet-server
 RUN bundle install
