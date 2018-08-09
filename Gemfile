@@ -1,73 +1,58 @@
 source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Looking to use the Edge version? gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0'
+ruby '2.5.1'
 
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '~> 5.2.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.0'
-
-# Use Rack Timeout. Read more: https://github.com/heroku/rack-timeout
-gem 'rack-timeout', '~> 0.4'
-
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
-
-# Use PostgreSQL as the database for Active Record
-gem 'pg', '~> 0.18'
-
-# Use Redis Rails to set up a Redis backed Cache and / or Session
-gem 'redis-rails', '~> 5.0.0'
-
-# Use Sidekiq as a background job processor through Active Job
-gem 'sidekiq', '~> 4.1'
-
-# Use Clockwork for recurring background tasks without needing cron
-# gem 'clockwork', '~> 2.0'
-
-gem 'rubocop'
-# Use Kaminari for pagination
-# gem 'kaminari', '~> 0.16'
-
-gem 'awesome_print'
-gem 'pry'
-gem 'pry-rails'
+gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-
-# Use Uglifier as the compressor for JavaScript assets
+# gem 'sass-rails', '~> 5.0'
+# Use Uglifier as compressor for JavaScript assets
 # gem 'uglifier', '>= 1.3.0'
+# See https://github.com/rails/execjs#readme for more supported runtimes
+# gem 'mini_racer', platforms: :ruby
 
-# Use Turbolinks. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
+# Use CoffeeScript for .coffee assets and views
+# gem 'coffee-rails', '~> 4.2'
+# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
+# gem 'turbolinks', '~> 5'
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+# gem 'jbuilder', '~> 2.5'
+# Use Redis adapter to run Action Cable in production
+gem 'redis', '~> 4.0'
+# Use ActiveModel has_secure_password
+# gem 'bcrypt', '~> 3.1.7'
+gem 'webpacker', '~> 3.5'
+# Use Capistrano for deployment
+# gem 'capistrano-rails', group: :development
 
-# Use Bootstrap SASS for Bootstrap support
-# gem 'bootstrap-sass', '~> 3.3'
-
-# some js garbage
-# gem 'jquery-rails'
-
-# Use Font Awesome Rails for Font Awesome icons
-# gem 'font-awesome-rails', '~> 4.6'
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', '>= 1.1.0', require: false
 
 group :development, :test do
-  # Call 'byebug' anywhere in your code to drop into a debugger console
-  gem 'byebug', platform: :mri
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
 group :development do
-  gem 'rspec'
-
-  # Enable a debug toolbar to help profile your application
-  gem 'rack-mini-profiler', '~> 0.10'
-
-  # Access an IRB console on exception pages or by using <%= console %>
-  gem 'web-console'
-
-  # Get notified of file changes. Read more: https://github.com/guard/listen
-  gem 'listen', '~> 3.0.5'
-
-  # Use Spring. Read more: https://github.com/rails/spring
+  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
+  gem 'web-console', '>= 3.3.0'
+  gem 'listen', '>= 3.0.5', '< 3.2'
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'webpacker', '~> 2.0'
+  gem 'rack-mini-profiler'
 end
+
+group :test do
+  # Adds support for Capybara system testing and selenium driver
+  gem 'capybara', '>= 2.15', '< 4.0'
+  gem 'selenium-webdriver'
+  # Easy installation and use of chromedriver to run system tests with Chrome
+  gem 'chromedriver-helper'
+end
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

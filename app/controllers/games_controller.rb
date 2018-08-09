@@ -1,19 +1,24 @@
 class GamesController < ApplicationController
   def index
-    @games = GameStore.all
+    @game_ids = GameStore.all_ids
   end
 
-  def new
+  # def new
+  #   @game = GameFactory.build
+  # end
+
+  def create
     @game = GameFactory.build
+    @id = GameStore.save(json: @game)
   end
-
+  # DO STUFF IN TRANSACTIONS!
   def show
     @game_id = params[:id]
     game = begin
       GameStore.load(@game_id)
     rescue GameStore::GameNotFound
       new_game = GameFactory.build
-      GameStore.save(json: new_game.to_json, id: params[:id])
+      new_game.id = GameStore.save(game: new_game, id: params[:id])
       new_game
     end
     @position = params[:player_id].try(:to_i)
@@ -22,7 +27,7 @@ class GamesController < ApplicationController
   end
 
   def destroy
-    @game = GameStore.find(params[:id])
-    @game.destroy
+    @game = GameStore.destroy(params[:id])
+    # @game.destroy
   end
 end

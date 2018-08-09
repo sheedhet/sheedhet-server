@@ -1,7 +1,7 @@
 module Api
   class GamesController < Api::ApplicationController
     def index
-      @games = GameStore.all
+      @game_ids = GameStore.all_ids
     end
 
     def show
@@ -23,6 +23,7 @@ module Api
       rescue GameNotFound
         render json: { error: "Game ID #{params[:id]} not found" }, status: 404
       end
+      # DO THIS IN A TRANSACTION!
       # did the load fail?
       p "what in the fuck is params? #{params.inspect}"
       play_request = Play.from_json(params[:play].to_json)
@@ -30,7 +31,7 @@ module Api
       play_executor = PlayExecutor.new(game: game, play: play_request)
       # is the play valid?
       updated_game = play_executor.execute!
-      GameStore.save(updated_game.to_json, params[:id])
+      id = GameStore.save(game: updated_game, id: params[:id])
       # did the save work?
       game_hash = updated_game.as_json
       position = play_request.position

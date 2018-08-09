@@ -24,9 +24,10 @@ class Game
                 :history,
                 :players,
                 :play_pile,
-                :valid_plays
+                :valid_plays,
+                :id
 
-  attr_reader :id
+  # attr_reader :
 
   def initialize(deck:, players:, hand_size:, collection_type: Pile)
     @discard_pile = collection_type.new

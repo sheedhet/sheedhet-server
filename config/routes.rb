@@ -23,3 +23,7 @@ Rails.application.routes.draw do
     put '/games/:id/players/:player_id', to: 'games#update'
   end
 end
+# Rails.application.routes.draw do
+#   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+#   root 'pages#main'
+# end

@@ -1,2 +1,0 @@
-class JsonStore < ApplicationRecord
-end

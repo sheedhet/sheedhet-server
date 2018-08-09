@@ -1,5 +1,5 @@
 <h1>Games#index</h1>
 <p>Find me in app/views/games/index.html.erb</p>
-<% @games.each do |game| %>
-  <pre><%= game.to_json %></pre>
+<% @game_ids.each do |game_id| %>
+  <%= link_to "#{game_id}",game_path(game_id) %>
 <% end %>
