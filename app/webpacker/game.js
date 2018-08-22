@@ -87,8 +87,13 @@ export default class Game extends React.Component {
           <Player
             player={this.self()}
             plays={
-              this.state.valid_plays.filter(play =>
-                play.position == this.self().position
+              this.state.valid_plays.filter(play => {
+                console.log(`does ${play.position} == ${this.self().position}?`)
+                const x = play.position == this.self().position
+                console.log(`${x ? 'yes' : 'no'}`)
+                return x
+              }
+
               )
             }
             clickCallback={
