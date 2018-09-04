@@ -16,7 +16,6 @@ export default class Game extends React.Component {
   }
 
   playClickHandler (position, hand) {
-    console.log("play clicked: ", position, hand)
     let matching_valid_plays = this.state.valid_plays.filter((play) => {
       let a = JSON.stringify(play.hand)
       let b = JSON.stringify(hand)
@@ -25,11 +24,9 @@ export default class Game extends React.Component {
     if (matching_valid_plays.length > 0) {
       let ply = {'position': position, 'hand': hand}
       let plyson = JSON.stringify(ply)
-      console.log('valid play', ply)
       let new_state = this.sheedhet.attemptPlay(ply)
       this.setState(new_state)
     } else {
-      console.log('invalid play')
     }
   }
 
@@ -71,15 +68,15 @@ export default class Game extends React.Component {
         </div>
         <div className="community">
           <Pile
-            pile_name="play"
+            pileName="play"
             contents={this.state.play_pile}
           />
           <Pile
-            pile_name="draw"
+            pileName="draw"
             contents={this.state.draw_pile}
           />
           <Pile
-            pile_name="discard"
+            pileName="discard"
             contents={this.state.discard_pile}
           />
         </div>
@@ -88,13 +85,9 @@ export default class Game extends React.Component {
             player={this.self()}
             plays={
               this.state.valid_plays.filter(play => {
-                console.log(`does ${play.position} == ${this.self().position}?`)
                 const x = play.position == this.self().position
-                console.log(`${x ? 'yes' : 'no'}`)
                 return x
-              }
-
-              )
+              })
             }
             clickCallback={
               hand => this.playClickHandler(this.self().position, hand)

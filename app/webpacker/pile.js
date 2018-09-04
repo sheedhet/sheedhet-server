@@ -1,8 +1,7 @@
 import React from 'react'
 import Card from 'card'
 
-export default function Pile(props) {
-  console.log(`new Pile, given ${props.plays ? props.plays.length : '0'} plays`)
+const Pile = (props) => {
   const play_css_classes = (card_string) => {
     if (props.plays && props.plays.length) {
       return props.plays.reduce( (result, play, i) => {
@@ -12,28 +11,36 @@ export default function Pile(props) {
         return result
       }, []).join(' ')
     } else {
-      return false
+      return ''
     }
   }
-  // const on_click_for = (card_string) => {
-  //   if (props.plays && props.plays.includes(card_string)) {
-  //     return props.onClick
-  //   } else {
-  //     return null
-  //   }
-  // }
+
+  const mouse_over = (card_string) => {
+    if (props.mouseOverCardHandler) {
+      props.mouseOverCardHandler(play_css_classes(card_string))
+    }
+  }
+
+  const mouse_out = (card_string) => {
+    if (props.mouseOutCardHandler) {
+      props.mouseOutCardHandler(play_css_classes(card_string))
+    }
+  }
+
   return (
-    <div className={'pile ' + props.pile_name}>
+    <div className={'pile ' + props.pileName}>
       {props.contents.map( (card_string, i) =>
         <Card
-          card_string={card_string}
+          cardString={card_string}
           index={i}
           key={i}
-          // pile_size={props.contents.length}
-          play_css_classes={play_css_classes(card_string)}
-          // onClick={on_click_for(card_string)}
+          playCssClasses={play_css_classes(card_string)}
+          mouseOverCardHandler={() => mouse_over(card_string)}
+          mouseOutCardHandler={() => mouse_out(card_string)}
         />
       )}
     </div>
   );
 }
+
+export default Pile

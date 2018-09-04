@@ -1,0 +1,11 @@
+.card-selector {
+  display:none;
+}
+
+.card-selector:checked + .card {
+  background-color: hsl(60, 100%, 50%);
+}
+
+.hand.play0 .card.play0 {
+  background-color: hsl(100, 100%, 50%);
+}

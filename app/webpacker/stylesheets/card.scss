@@ -16,10 +16,7 @@ $cardWidth: $cardSize * $cardRatio;
   border-width: 0.001em;
   border-style: solid;
   border-color: #fcfcfc;
-}
-
-.card.highlight {
-  background-color: #fff705;
+  display: block;
 }
 
 .card.playable {
