@@ -25,9 +25,11 @@ export default function Card(props) {
   }
 
   const random_angle = (min, max) => {
-    min = Math.ceil(min)
-    max = Math.floor(max)
-    return Math.floor(Math.random() * (max - min)) + min //The maximum is exclusive and the minimum is inclusive
+    let minimum = Math.ceil(min)
+    let maximum = Math.floor(max)
+    //The maximum is exclusive and the minimum is inclusive
+    let angle = Math.floor(Math.random() * (maximum - minimum)) + minimum
+    return angle
   }
 
   const random_skew_angle = () => {
@@ -35,7 +37,7 @@ export default function Card(props) {
   }
 
   const card_style = {
-    transform: 'rotate(' + random_skew_angle() + ' deg)'
+    transform: `rotate(${random_skew_angle()}deg)`
   }
 
   const suit = suit_lookup[props.cardString.slice(-1)]
@@ -43,7 +45,7 @@ export default function Card(props) {
   const face_up = props.cardString == 'xx' ? 'back' : 'face'
   const css_classes = ['card', suit, rank, props.playCssClasses].join(' ')
   const has_plays = (props.playCssClasses.match(/\bplay\w+/) || []).length
-  const input_id = `${props.cardString}-${props.index}`
+  const input_id = `${props.pileName}-${props.cardString}`
 
   return (
     <div

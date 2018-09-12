@@ -3,6 +3,7 @@ import Pile from 'pile'
 
 const Hand = (props) => {
   const hand_ref = React.createRef()
+  const button_ref = React.createRef()
   const highlight_plays = (plays) => {
     if (plays && hand_ref) {
       let plays_array = plays.split(' ')
@@ -23,8 +24,15 @@ const Hand = (props) => {
       return result
     }, [])
   }
+  const hand_click_handler = (_event) => {
+    if (hand_ref.current.querySelectorAll('.card-selector:checked').length) {
+      button_ref.current.classList.add('visible')
+    } else {
+      button_ref.current.classList.remove('visible')
+    }
+  }
   return (
-    <div className="hand" ref={hand_ref}>
+    <div className="hand" ref={hand_ref} onClick={hand_click_handler}>
       {['in_hand', 'face_up', 'face_down'].map( pile_name =>
         <Pile
           contents={props.cards[pile_name]}
@@ -35,6 +43,10 @@ const Hand = (props) => {
           mouseOutCardHandler={unhighlight_plays}
         />
       )}
+      <button
+        className='submit-play'
+        ref={button_ref}
+      >Play</button>
     </div>
   );
 }

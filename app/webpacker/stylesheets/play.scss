@@ -3,9 +3,29 @@
 }
 
 .card-selector:checked + .card {
-  background-color: hsl(60, 100%, 50%);
+  background-color: hsla(60, 100%, 50%, 50%);
 }
 
 .hand.play0 .card.play0 {
-  background-color: hsl(100, 100%, 50%);
+  background-color: hsla(100, 100%, 50%, 50%);
+}
+
+.hand.play1 .card.play1 {
+  background-color: hsla(200, 100%, 50%, 50%);
+}
+
+.hand.play2 .card.play2 {
+  background-color: hsla(300, 100%, 50%, 50%);
+}
+
+.hand.play3 .card.play3 {
+  background-color: hsla(250, 100%, 50%, 50%);
+}
+
+.submit-play.visible {
+  display: initial;
+}
+
+.submit-play {
+  display: none;
 }

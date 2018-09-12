@@ -32,6 +32,7 @@ const Pile = (props) => {
       {props.contents.map( (card_string, i) =>
         <Card
           cardString={card_string}
+          pileName={props.pileName}
           index={i}
           key={i}
           playCssClasses={play_css_classes(card_string)}
