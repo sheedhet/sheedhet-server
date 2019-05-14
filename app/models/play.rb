@@ -5,7 +5,7 @@ class Play
 
   def self.from_json(json, container: Hand)
     hash = JSON.parse(json)
-    position = hash['position']
+    position = hash['position'].to_i
     hand = container.from_json(hash['hand'].to_json)
     destination = hash['destination'] || :play_pile
     new(position: position, hand: hand, destination: destination)
@@ -53,6 +53,6 @@ class Play
 
   def contains?(other)
     raise ArgumentError unless other.is_a?(Play)
-    hand.contains?(other.hand)
+    other.destination == destination && hand.contains?(other.hand)
   end
 end
