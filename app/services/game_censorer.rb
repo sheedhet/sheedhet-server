@@ -21,6 +21,9 @@ class GameCensorer
 
   def censor_plays
     game['valid_plays'].each do |play|
+      unless play.dig('hand', 'face_down').nil?
+        play['hand']['face_down'] = turn_down_pile(play['hand']['face_down'])
+      end
       play['hand'] = {} unless play['position'].to_i == position
     end
   end
@@ -59,6 +62,6 @@ class GameCensorer
   end
 
   def turn_down_pile(pile)
-    pile.map { |_card| 'xx' }
+    pile.map { |_card| 'xx' } if pile.is_a?(Array)
   end
 end
