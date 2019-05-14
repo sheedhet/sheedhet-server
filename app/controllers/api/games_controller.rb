@@ -14,7 +14,7 @@ module Api
         for_position: position
       )
       censored_game_hash['id'] = params[:id] if params[:id].present?
-      render json: censored_game_hash, status: :ok
+      render(json: censored_game_hash, status: :ok)
     end
 
     def update
@@ -40,7 +40,9 @@ module Api
         for_position: position
       )
       censored_game_hash['id'] = params[:id] if params[:id].present?
-      render json: censored_game_hash, status: :ok
+      render(json: censored_game_hash, status: :ok)
+    rescue PlayExecutor::InvalidPlayError => e
+      render(json: {error: 'Invalid Play'}, status: :bad_request)
     end
   end
 end
