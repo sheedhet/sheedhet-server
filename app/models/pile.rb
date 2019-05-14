@@ -10,7 +10,7 @@ class Pile
 
   DELGATE_ARRAY_QUERIES = %i(
     all? count include? pop size sort rindex first last sample empty?
-    group_by reverse
+    group_by reverse map
   ).freeze
 
   command DELEGATE_ARRAY_COMMANDS => :@data
@@ -39,7 +39,7 @@ class Pile
 
   def -(other)
     raise ArgumentError, "Can't subtract non-Pile" unless other.is_a?(Pile)
-    raise ArgumentError, "Can't subtract, not in Pile" unless contains?(other)
+    raise ArgumentError, "Can't subtract, #{other.as_json} not in Pile #{self.as_json}" unless contains?(other)
     new_data = data.dup
     other.as_json.each do |card_to_remove|
       remove_from_index = new_data.find_index do |card|
@@ -68,7 +68,7 @@ class Pile
     wrong_class_error_msg = "Can't remove non-#{@content.class}"
     raise ArgumentError, wrong_class_error_msg unless card.is_a?(@content)
     remove_index = data.find_index(card)
-    not_found_error_msg = "#{@content.class} #{card} not found"
+    not_found_error_msg = "#{card.class} #{card.as_json} not found"
     raise ArgumentError, not_found_error_msg if remove_index.nil?
     data.slice!(remove_index)
     self
@@ -87,12 +87,12 @@ class Pile
   end
 
   def contains?(other)
-    raise ArgumentError, "Can't compare non-Pile" unless other.is_a?(Pile)
+    raise ArgumentError, "Can't compare wtih non-Pile: #{other.class}" unless other.is_a?(Pile)
     grouped_self = group_by(&:as_json)
     grouped_other = other.group_by(&:as_json)
     grouped_other.each do |card, collection|
       card_not_found = grouped_self[card].nil?
-      not_enough_of_card = grouped_self[card].size <= collection.size
+      not_enough_of_card = grouped_self[card]&.size&.< collection.size
       return false if card_not_found || not_enough_of_card
     end
     true
