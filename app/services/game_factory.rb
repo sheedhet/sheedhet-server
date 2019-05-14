@@ -30,8 +30,7 @@ class GameFactory
     ).tap do |game|
       game.history = hash['history'].map do |p|
         {
-          play: Play.from_json(p['play'].to_json),
-          state: p['state']
+          play: Play.from_json(p['play'].to_json)
         }
       end
       game.valid_plays = hash['valid_plays'].map { |p| Play.from_json(p.to_json) }
