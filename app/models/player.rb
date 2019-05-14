@@ -9,6 +9,7 @@ class Player
     Jim
     Sal
     Ben
+    Kelly
     Tim
     Jon
     Sam
@@ -91,6 +92,10 @@ class Player
 
   def lowest_card
     cards.lowest_card
+  end
+
+  def can_pickup_face_down?
+    cards.face_down_only?
   end
 
   def random_name
