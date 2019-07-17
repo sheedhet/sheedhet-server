@@ -82,13 +82,14 @@ class Hand
 
   def plays
     initial_plays = plays_from_active_pile
-    if initial_plays.size == 1
-      face, initial_play = initial_plays.first
-      extension_plays = find_extension_plays(face)
-      final_plays = initial_play + extension_plays
-    else
+    # if initial_plays.size == 1
+    #   face, initial_play = initial_plays.first
+    #   # extension_plays = find_extension_plays(face)
+    #   # final_plays = initial_play + extension_plays
+    #   final_plays = initial_play
+    # else
       final_plays = initial_plays.values
-    end
+    # end
     Array(final_plays)
   end
 
@@ -109,6 +110,10 @@ class Hand
     other.container_names.all? { |name| data[name].contains?(other[name]) }
   end
 
+  def face_down_only?
+    compact.keys == [:face_down]
+  end
+
   protected
 
   attr_accessor :data
@@ -125,11 +130,12 @@ class Hand
   def find_extension_plays(face)
     piles_with_cards = compact
     _active_pile = piles_with_cards.shift
-    piles_with_cards.reduce(self.class.new) do |memo, (pile_name, pile)|
+
+    piles_with_cards.reduce(self.class.new) do |extension_plays, (pile_name, pile)|
       grouped_by_face = pile.group_by_face
       valid = grouped_by_face[face]
       valid_hand = self.class.new(pile_name => grouped_by_face[face])
-      result = memo + valid_hand unless valid.nil?
+      result = extension_plays + valid_hand unless valid.nil?
       break result if grouped_by_face.size > 1
       result
     end
