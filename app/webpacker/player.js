@@ -1,16 +1,29 @@
 import React from 'react'
-import Hand from 'hand'
+import Pile from 'pile'
 
-export default function Player(props) {
-  const has_plays = props.plays.length ? ' has_plays' : ''
-  const css_classes = `player position${props.player.position}` + has_plays
+const Player = (props) => {
+  const uri = () => {
+    const game_elm = document.querySelector('#sheedhet_container')
+    const game_id = game_elm.dataset['game_id']
+    return `/games/${game_id}/players/${props.player.position}`
+  }
   return (
-    <div className={css_classes}>
-      <span className='player_name'>{props.player.name}</span>
-        <Hand
-          cards={props.player.cards}
-          plays={props.plays}
-        />
+    <div className='player position'>
+      <a href={uri()}>
+        <span className='player_name'>{props.player.name}</span>
+      </a>
+      <div className="hand">
+        {['in_hand', 'face_up', 'face_down'].map((pile_name) =>
+          <Pile
+            contents={props.player.cards[pile_name]}
+            pile_name={pile_name}
+            key={pile_name}
+            inputs={(props.inputs && props.inputs[pile_name]) || false}
+          />
+        )}
+      </div>
     </div>
   );
 }
+
+export default Player
