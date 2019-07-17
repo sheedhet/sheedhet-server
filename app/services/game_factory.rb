@@ -39,6 +39,11 @@ class GameFactory
     end
   end
 
+  def self.from_seed
+    json = File.read('game_seed.json')
+    from_json(json)
+  end
+
   def initialize(
     options: DEFAULT_OPTIONS,
     classes: DEFAULT_CLASSES
