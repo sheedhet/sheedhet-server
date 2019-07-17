@@ -2,24 +2,20 @@
   display:none;
 }
 
-.card-selector:checked + .card {
+.card .card-selector:checked + label div {
   background-color: hsla(60, 100%, 50%, 50%);
 }
 
-.hand.play0 .card.play0 {
-  background-color: hsla(100, 100%, 50%, 50%);
+.card_inputs {
+  display: none;
 }
 
-.hand.play1 .card.play1 {
-  background-color: hsla(200, 100%, 50%, 50%);
-}
+$max_turns: 10;
 
-.hand.play2 .card.play2 {
-  background-color: hsla(300, 100%, 50%, 50%);
-}
-
-.hand.play3 .card.play3 {
-  background-color: hsla(250, 100%, 50%, 50%);
+@for $i from 0 through $max_turns {
+  .hand.play#{ $i } .card.play#{ $i } {
+    background-color: hsla((360 / $max_turns * $i), 50%, 75%, 50%);
+  }
 }
 
 .submit-play.visible {

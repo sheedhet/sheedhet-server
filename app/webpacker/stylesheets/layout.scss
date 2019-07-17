@@ -1,62 +1,52 @@
+$gameMaxWidth: 4.5em;
+$cardSize: 1em;
+$cardRatio: 0.7045;
+$cardWidth: $cardSize * $cardRatio;
+$minCardMargin: 0.1em;
+
 .game {
+  background-color: hsl(138,31%,43%);
   display: grid;
   width: 100%;
   height: 90vh;
-  max-width: 750px;
+  // max-width: $gameMaxWidth;
   margin: 0 auto;
   grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 1em;
 }
 
 .pile {
-  display: flex;
-  flex-direction: row;
-  flex-shrink: 0;
-  .card {
-    margin: 0.02em;
-  }
+  outline: black dotted 2px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,  minmax($minCardMargin, auto));
 }
 
 .opponents {
+  background-color: hsl(10,31%,43%);
+  width: 80%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-gap: 0.5em;
   .card {
     font-size: 5rem;
   }
   justify-self: center;
+  outline: red dotted 2px;
 }
 
 .community {
   justify-self: center;
-  display:flex;
-  flex-direction: row;
-
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1em;
 }
 
 .pile {
   &.draw, &.discard, &.play {
     .card {
       font-size: 5rem;
-      &:first-child {
-        margin-left: 0;
-      }
     }
-  }
-}
-
-.discard, .play {
-  .card {
-    margin-left: -0.5em;
-  }
-}
-
-.draw .card {
-  margin-left: -0.71em;
-}
-
-.pile.play {
-  .card {
-    font-size: 5rem;
   }
 }

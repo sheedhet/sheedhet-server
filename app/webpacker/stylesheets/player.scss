@@ -3,6 +3,7 @@
   flex-direction: column;
 
   .pile {
+    position: relative;
     .in_hand {
       order: 1;
     }
@@ -27,6 +28,7 @@
 
 .self {
   justify-self: center;
+  width: 85%;
   .pile.face_down {
     order: 2;
     margin-top: -9em;
@@ -42,15 +44,16 @@
   .submit-play {
     order: 4;
   }
-  .play {
-    color:yellow;
-  }
 }
 
 .player.has_plays {
   .player_name {
     color: yellow;
   }
+}
+
+.player {
+  text-align: center;
 }
 
 .player_name {
