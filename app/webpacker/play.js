@@ -5,9 +5,7 @@ class Play extends React.Component {
     super(props)
     this.state ={
       play: props.play,
-      // player: props.player,
       index: props.index,
-      getRefForCard: props.getRefForCard,
     }
   }
 
@@ -15,15 +13,9 @@ class Play extends React.Component {
     return(
       <button
         className={`play`}
-        type="checkbox"
         id={this.state.index}
       >
         <span className="description">{`${this.state.play.destination}`}</span>
-        {this.state.play.cards.map( (card_key) => {
-          return(
-            <div className={`play_input ${card_key}`} key={card_key} />
-          )
-        })}
       </button>
     )
   }
