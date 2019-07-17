@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     get '/games/:id', to: 'games#show'
     get '/games/:id/players/:player_id', to: 'games#show'
     put '/games/:id/players/:player_id', to: 'games#update'
+    put '/games/:id', to: 'games#update'
   end
 end
 # Rails.application.routes.draw do
