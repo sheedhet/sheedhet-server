@@ -2,46 +2,50 @@ import React from 'react'
 import Card from 'card'
 
 const Pile = (props) => {
-  const play_css_classes = (card_string) => {
-    if (props.plays && props.plays.length) {
-      return props.plays.reduce( (result, play, i) => {
-        if (play.includes(card_string)) {
-          result.push(`play${i}`)
-        }
-        return result
-      }, []).join(' ')
-    } else {
-      return ''
-    }
+  const contents = props.contents || []
+
+  const rand = (seed) => {
+    const rand = Math.sin(seed) * 10000;
+    return rand - Math.floor(rand);
   }
 
-  const mouse_over = (card_string) => {
-    if (props.mouseOverCardHandler) {
-      props.mouseOverCardHandler(play_css_classes(card_string))
-    }
+  const bounded_rand = (min, max, seed) => {
+    const minimum = Math.ceil(min)
+    const maximum = Math.floor(max)
+
+    //The maximum is exclusive and the minimum is inclusive
+    const random = Math.floor(rand(seed) * (maximum - minimum)) + minimum
+    return random
   }
 
-  const mouse_out = (card_string) => {
-    if (props.mouseOutCardHandler) {
-      props.mouseOutCardHandler(play_css_classes(card_string))
-    }
+  const random_skew_angle = (card_string, index) => {
+    const pile_name = props.pile_name
+    const card_and_pile_name = `${card_string}${pile_name}`
+    let string_codes = [...card_and_pile_name].map(
+      (char) => { return char.charCodeAt(0) }
+    )
+    string_codes.unshift(index)
+    const seed = parseInt(string_codes.join(''), 10)
+    const angle = bounded_rand(-30.0, 30.0, seed) / 9.0
+    return angle
   }
 
   return (
-    <div className={'pile ' + props.pileName}>
-      {props.contents.map( (card_string, i) =>
-        <Card
-          cardString={card_string}
-          pileName={props.pileName}
-          index={i}
-          key={i}
-          playCssClasses={play_css_classes(card_string)}
-          mouseOverCardHandler={() => mouse_over(card_string)}
-          mouseOutCardHandler={() => mouse_out(card_string)}
-        />
-      )}
+    <div className={'pile ' + props.pile_name} >
+      {contents.map((card_string, i) => {
+        const key = `${props.pile_name}-${i}-${card_string}`
+        return(
+          <Card
+            cardString={card_string}
+            pile_name={props.pile_name}
+            key={key}
+            index={key}
+            skew_angle={random_skew_angle(card_string, i)}
+          />
+        )
+      })}
     </div>
-  );
+  )
 }
 
 export default Pile
