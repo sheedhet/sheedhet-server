@@ -5,13 +5,14 @@ class Game
   include JsonEquivalence
 
   VALID_CARD_PLAYS = {
-    :'2' => -> { true },
-    :'4' => -> { true },
+    :'2' => ->(c) { true },
+    :'4' => ->(c) { true },
     :'5' => ->(c) { c.value >= 5 },
     :'6' => ->(c) { c.value >= 6 },
-    :'7' => ->(c) { c.value <= 7 || %w(2 3).include?(c.face) },
+    :'7' => ->(c) { c.value <= 7 || %i(2 3).include?(c.face) },
     :'8' => ->(c) { c.value >= 8 },
     :'9' => ->(c) { c.value >= 9 },
+    :'10' => ->(c) { c.value >= 10 },
     j: ->(c) { c.value >= 11 },
     q: ->(c) { c.value >= 12 },
     k: ->(c) { c.value >= 13 },
