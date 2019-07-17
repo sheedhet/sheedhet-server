@@ -1,71 +1,75 @@
 export default class Sheedhet {
   // eventually this will include an auth component
-  constructor (game_id, position, server_url) {
-    console.log('new sheedhet, game_id:', game_id)
+  constructor(game_id, position, host) {
+    console.log(`start sheedhet library: game_id: ${game_id}, position: ${position}, host: ${host}`)
     this.game_id = game_id
     this.position = position
-    this.server_url = server_url
+    this.host = host
   }
 
-  url () {
-    let url = this.server_url
-    let game_id = this.game_id
-    let position = this.position
-    let path = `/api/games/${game_id}/players/${position}`
-    return url + path
+  uri(path = '') {
+    const game_id = this.game_id
+    const position = this.position
+    return this.host + `/api/games/${game_id}/players/${position}` + path
   }
 
-  attemptPlay (play) {
-    console.log('attempt this play:', play)
-    let url = this.url()
-    let config = {
+  attemptPlay(play) {
+    const body = { play: play }
+    console.log('attempt this request:', body)
+    let result = this.putRequest(JSON.stringify(body)).then((good) => {
+      console.log('attempted play then: ', good)
+      return good
+    })
+    console.log('returned from attemptPlay:', result)
+    return result
+  }
+
+  putRequest(body) {
+    return this.request('PUT', body)
+  }
+
+  getRequest() {
+    return this.request('GET')
+  }
+
+  request(method, body) {
+    const config = {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'PUT',
-      body: JSON.stringify({"play": play})
+      method: method,
+      body: body
     }
-    console.log('attempt a fetch:', this.url(), config)
-    fetch(url, config).then((resp) => {
-      if (resp.ok) {
-        return resp.json()
+    return fetch(this.uri(), config).then((response) => {
+      if (response.ok) {
+        return response.json()
       }
-      throw new Error()
-    }).then((data) => {
-      console.log('fetch successful:', data)
-      return this.successfulResponse(data)
+      throw new Error(`${response.status}: ${response.statusText}`)
+    }).then((data_from_json) => {
+      console.log('successful request:', data_from_json)
+      return data_from_json
     }).catch((error) => {
-      console.log('catching a failure:', error)
-      return this.failedResponse()
+      console.log('Error making request:', error)
+      return false
     })
   }
 
-  successfulResponse (data) {
-    // have the new state, display it
-    return data
-  }
-
-  update () {
-    let url = this.url()
-    let config = {
-      method: 'GET'
-    }
-    fetch(url, config).then((resp) => {
-      if (resp.ok) {
-        return resp.json()
-      }
-      throw new Error()
-    }).then((data) => {
-      return data
-    }).catch((error) => {
-      console.log('boo')
+  update() {
+    console.log('Request update...')
+    const result = this.getRequest().then((good) => {
+      console.log('i wonder what this is?', good)
+      return good
     })
+    console.log('returned from update: ', result)
+    return result
   }
 
-  failedResponse () {
+  failedResponse() {
     // get the new state and do a state update
+    console.log('got a failed response, attempting a state update')
     var updated_state = this.update()
+    console.log('okay now we have an updated state?')
     return updated_state
   }
 }
