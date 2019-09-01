@@ -18,31 +18,24 @@ module Api
     end
 
     def update
-      game = begin
-        GameStore.load(params[:id])
-      rescue GameNotFound
-        render json: { error: "Game ID #{params[:id]} not found" }, status: 404
-      end
-      # DO THIS IN A TRANSACTION!
-      # did the load fail?
-      p "what in the fuck is params? #{params.inspect}"
-      play_request = Play.from_json(params[:play].to_json)
-      p "new play: #{play_request.inspect}"
-      play_executor = PlayExecutor.new(game: game, play: play_request)
-      # is the play valid?
-      updated_game = play_executor.execute!
-      id = GameStore.save(game: updated_game, id: params[:id])
-      # did the save work?
-      game_hash = updated_game.as_json
-      position = play_request.position
-      censored_game_hash = GameCensorer.censor(
-        game: game_hash,
-        for_position: position
+      play_executor = ExecutorFactory.build(
+        game_id: params[:id],
+        play_params: play_params
       )
-      censored_game_hash['id'] = params[:id] if params[:id].present?
-      render(json: censored_game_hash, status: :ok)
-    rescue PlayExecutor::InvalidPlayError => e
-      render(json: {error: 'Invalid Play'}, status: :bad_request)
+      updated_game = play_executor.execute!
+      _id = GameStore.save(game: updated_game, id: params[:id])
+      # did the save work?
+      redirect_to(action: :show, id: params[:id], status: :see_other)
+    rescue GameStore::GameNotFound
+      render json: { error: "Game ID #{params[:id]} not found" }, status: 404
+    rescue PlayExecutor::InvalidPlayError, ExecutorFactory::BadPlayType => e
+      render(json: { error: 'Invalid Play' }, status: :bad_request)
+    end
+
+    protected
+
+    def play_params
+      params.require(:play).permit(:destination, :position, hand: {})
     end
   end
 end

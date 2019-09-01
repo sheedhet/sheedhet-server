@@ -31,6 +31,8 @@ class Player
     Carly
     Amanda
     Emma
+    Liz
+    Kyle
     Cody
     Evan
     Nolan
@@ -50,9 +52,9 @@ class Player
     name: random_name,
     position: 0,
     container: Hand,
-    existing: Hand.new
+    existing: nil
   )
-    @cards = existing
+    @cards = existing || container.new
     @container = container
     @name = name
     @position = position
@@ -71,9 +73,20 @@ class Player
   end
 
   def plays
-    cards.plays.map do |hand|
+    plays_per_pile = cards.play_hands_per_pile.map do |hand|
       Play.new(position: position, hand: hand, destination: :play_pile)
     end
+    in_hand_onlys = plays_per_pile.select(&:in_hand_only?)
+    if (in_hand_onlys.size == 1)
+      combinable = plays_per_pile.find do |play|
+        play.face_up_only? && play.face == in_hand_onlys.first.face
+      end
+      plays_per_pile = [combinable + in_hand_onlys.first] if combinable
+    end
+    if (!in_hand_onlys.empty?)
+      plays_per_pile = plays_per_pile.reject { |play| play.face_up_only? }
+    end
+    plays_per_pile
   end
 
   def add_to(target:, subject:)
@@ -94,7 +107,11 @@ class Player
     cards.lowest_card
   end
 
-  def can_pickup_face_down?
+  def has_cards?
+    !cards.empty?
+  end
+
+  def only_face_down_cards?
     cards.face_down_only?
   end
 

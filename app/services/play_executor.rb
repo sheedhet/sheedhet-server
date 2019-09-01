@@ -3,67 +3,40 @@ class PlayExecutor
 
   attr_reader :game, :play
 
-  def initialize(game:, play:)
-    @game = game
-    @play = play
+  def initialize(game_id:, play_params:)
+    @game = GameStore.load(game_id)
+    @play = Play.from_json(play_params.to_json)
+  rescue JSON::ParserError
+    raise InvalidPlayError
   end
 
   def valid?
     game.valid_plays.any? { |valid_play| valid_play.contains?(play) }
   end
 
-  # def valid_swap?
-  #   game.valid_plays.any? do |valid_play|
-  #     valid_play.position == play.position
-  #   end
-  #   [:in_hand, :face_up].all? do |pile_name|
-  #     sult = player.cards[pile_name].contains?(play.hand[pile_name])
-  #   end
-  # end
-
   def execute!
     raise InvalidPlayError unless valid?
-    send_cards_to_destination
-    refill_hand
-    clear_play_pile if four_of_a_kind_in_play? || ten_played?
-    game.history.push(play: play) #, state: game.as_json)
+    executed_play = perform_play
+    game.history.push(play: play)
     game.update_valid_plays!
     game
   end
 
-  # protected
+  protected
+
+  def play_for_history
+    play
+  end
 
   def player
     @player ||= game.players.find { |p| p.position == play.position }
   end
 
-  def send_cards_to_destination
-    case play.destination
-    when :play_pile
-      play_from_player
-    when :in_hand
-      pickup_play_pile
-    # when :discard_pile
-      # clear_play_pile
-      # shouldn't this be where players pick up the play pile??
-    when :swap
-      perform_swap
-    end
-  end
-
-  def perform_swap
-    # mark equal number of cards in hand and face up, swap their positions
-    from_face_up = play.hand[:face_up]
-    from_in_hand = play.hand[:in_hand]
-    from_face_up.each { |c| player.cards.remove_from(target: :face_up, subject: c) }
-    from_in_hand.each { |c| player.cards.add_to(target: :face_up, subject: c) }
-    from_in_hand.each { |c| player.cards.remove_from(target: :in_hand, subject: c) }
-    from_face_up.each { |c| player.cards.add_to(target: :in_hand, subject: c) }
-  end
-
-  def pickup_play_pile
-    game.play_pile.each { |c| player.cards.add_to(target: :in_hand, subject: c) }
-    game.play_pile = Pile.new
+  def perform_play
+    play_from_player
+    refill_hand
+    clear_play_pile if four_of_a_kind_in_play? || ten_played?
+    play
   end
 
   def play_from_player

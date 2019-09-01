@@ -1,20 +1,20 @@
 # Deals cards in a game
 #
 class CardDealer
-  def self.deal(game, hand_type = Hand)
-    new(game, hand_type).deal_new_game
+  def self.deal(game, hand_klass = Hand)
+    new(game, hand_klass).deal_new_game
   end
 
-  def initialize(game, hand_type = Hand)
+  def initialize(game, hand_klass = Hand)
     @cards = game.draw_pile
     @hand_size = game.hand_size
     @players = game.players
-    @hand_type = hand_type
+    @hand_klass = hand_klass
   end
 
   def deal_new_game
     @cards.shuffle!
-    @hand_type::CONTAINER_NAMES.each { |target| deal_everyone(target) }
+    @hand_klass::CONTAINER_NAMES.each { |target| deal_everyone(target) }
   end
 
   def deal_everyone(target)

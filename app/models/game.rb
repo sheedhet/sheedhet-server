@@ -28,8 +28,6 @@ class Game
                 :valid_plays,
                 :id
 
-  # attr_reader :
-
   def initialize(deck:, players:, hand_size:, collection_type: Pile)
     @discard_pile = collection_type.new
     @draw_pile    = deck
@@ -61,46 +59,44 @@ class Game
   end
 
   def update_valid_plays!
-    @valid_plays = valid_swaps + (started? ? mid_game_plays : opening_plays)
-    # this method needs to be smarter, its more than tertiary:
-    #  - swaps almost happen in parallel, but they also block turns
-    #  - i think opening plays only describes one play, a special case
-    #  - evaluate swaps independantly of turns list
-    #  - add an easy optimization to checking for swaps, only check first x
-
-    # i feel like i already completed the above, where did that go?
+    @valid_plays = valid_swaps + mid_game_plays + opening_plays + face_down_plays
   end
 
   # protected
 
   def face_down_plays
-    return [] unless next_to_play.can_pickup_face_down?
+    return [] unless started? && next_to_play.only_face_down_cards?
     next_to_play.cards[:face_down].map.with_index do |face_down_card, i|
       Play.new(
         position: next_to_play.position,
-        hand: Hand.new({ face_down: [face_down_card] }, Pile, [:face_down]),
+        hand: Hand.new({ face_down: [face_down_card] }),
         destination: :"flip#{i}"
       )
     end
   end
 
   def mid_game_plays
+    return [] unless started?
     mid_game_plays = valid_plays_for_next_player
-    mid_game_plays += last_to_play.plays.select do |play|
-      play.face == last_turn[:play].face
-    end unless last_turn[:play].destination == :in_hand
-    mid_game_plays + face_down_plays
+    last_turn_pickup = last_turn[:play].pick_up_play?
+    last_turn_flip = last_turn[:play].flip_play?
+    last_turn_ten = last_turn[:play].face == :'10'
+    no_continuation_plays = last_turn_pickup || last_turn_ten || last_turn_flip
+    unless no_continuation_plays
+      continuation_plays = last_to_play.plays.select do |play|
+        play.face == last_turn[:play].face
+      end
+      mid_game_plays += continuation_plays
+    end
+    mid_game_plays
   end
 
   def valid_plays_for_next_player
-    mid_game_plays = next_to_play.plays.select do |play|
-      card_valid_to_play?(play.first_card) && !play_from_face_down?(play)
+    valid_plays_for_next_player = next_to_play.plays.select do |play|
+      card_valid_to_play?(play.first_card)
     end
-    mid_game_plays.push(pick_up_the_pile_play)
-  end
-
-  def play_from_face_down?(play)
-    play.destination == :play_pile && play.hand.face_down_only?
+    valid_plays_for_next_player.push(pick_up_the_pile_play) unless play_pile.empty?
+    valid_plays_for_next_player
   end
 
   def card_valid_to_play?(card)
@@ -115,7 +111,7 @@ class Game
   def pick_up_the_pile_play
     Play.new(
       position: next_to_play.position,
-      hand: Hand.new({ play_pile: play_pile.all }, Pile, [:play_pile]),
+      hand: Hand.new,
       destination: :in_hand
     )
   end
@@ -133,6 +129,7 @@ class Game
   end
 
   def opening_plays
+    return [] if started?
     all_min_plays = players.each_with_object([]) do |player, min_plays|
       plays = player.plays
       smallest_play = plays.min_by(&:value)
@@ -152,7 +149,7 @@ class Game
   end
 
   def last_turn
-    history.reverse.find { |play| play[:play].destination != :swap }
+    history.reverse.find { |play| play[:play].destination != :swap } || {}
   end
 
   def last_to_play
@@ -166,25 +163,36 @@ class Game
   end
 
   def last_play_cleared_pile?
-    play_pile.empty? && !history.empty? && (four_of_a_kind_played_last? || discard_pile.last.face == :'10')
+    play_pile.empty? &&
+      !history.empty? &&
+        (four_of_a_kind_played_last? || discard_pile.last.face == :'10')
   end
 
   def last_to_play_picked_up?
-    last_turn[:play].destination == :in_hand && last_turn[:play].position == last_to_play.position
+    last_turn[:play].pick_up_play? &&
+      last_turn[:play].position == last_to_play.position
   end
 
   def next_to_play
-    return last_to_play if last_play_cleared_pile? && !last_to_play_picked_up?
-    players.find do |player|
-      player.position == last_to_play.position.next % players.size
+    return last_to_play if last_turn[:play].flip_play?
+    last_plays_again =
+      last_play_cleared_pile? && !last_to_play_picked_up? && last_to_play.has_cards?
+    return last_to_play if last_plays_again
+    next_position = last_to_play.position.next % players.size
+    while next_position != last_to_play.position do
+      next_player = players.find { |player| player.position == next_position }
+      break if next_player.has_cards?
+      next_position = next_position.next % players.size
     end
+    raise ArgumentError, "why isn't there a next_to_play?" if next_player.nil?
+    next_player
   end
 
   def swaps_completed?
-    history.count { |turn| turn[:play].destination == :swap } == players.size
+    history.count { |turn| turn[:play].swap_play? } == players.size
   end
 
   def started?
-    history.reject { |turn| turn[:play].destination == :swap }.any?
+    history.reject { |turn| turn[:play].swap_play? }.any?
   end
 end

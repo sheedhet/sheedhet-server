@@ -44,13 +44,13 @@ class GameCensorer
 
   def turn_down_face_down(player)
     cards = player['cards']
-    cards['face_down'] = turn_down_pile(cards['face_down'])
+    cards['face_down'] = turn_down_pile(cards['face_down']) if cards['face_down']
     player
   end
 
   def turn_down_in_hand(player)
     cards = player['cards']
-    cards['in_hand'] = turn_down_pile(cards['in_hand'])
+    cards['in_hand'] = turn_down_pile(cards['in_hand']) if cards['in_hand']
     player
   end
 

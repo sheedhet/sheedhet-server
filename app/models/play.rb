@@ -26,8 +26,16 @@ class Play
   end
 
   def ==(other)
-    raise ArgumentError unless other.is_a?(Play)
+    raise ArgumentError, "Can't compare Play with #{other.class}" unless other.is_a?(Play)
     as_json == other.as_json
+  end
+
+  def +(other)
+    raise ArgumentError, "Can't add Play to #{other.class}" unless other.is_a?(Play)
+    raise ArgumentError, "Can't add Play with different destination" unless other.destination == destination
+    raise ArgumentError, "Can't add Play for different position" unless other.position == position
+    combined_hand = hand + other.hand
+    self.class.new(position: position, destination: destination, hand: combined_hand)
   end
 
   def value
@@ -47,12 +55,34 @@ class Play
     cards.first
   end
 
-  def pick_up?
-    hand[:draw_pile].present?
+  def in_hand_only?
+    hand.in_hand_only?
+  end
+
+  def face_up_only?
+    hand.face_up_only?
+  end
+
+  def face_down_only?
+    hand.face_down_only?
+  end
+
+  def flip_play?
+    destination.to_s.start_with?('flip')
+  end
+
+  def swap_play?
+    destination == :swap
+  end
+
+  def pick_up_play?
+    destination == :in_hand
   end
 
   def contains?(other)
     raise ArgumentError unless other.is_a?(Play)
-    other.destination == destination && hand.contains?(other.hand)
+    same_destination = other.destination == destination
+    same_position = other.position == position
+    same_destination && same_position && hand.contains?(other.hand)
   end
 end

@@ -8,7 +8,7 @@ class Hand
 
   DELEGATE_HASH_QUERIES = %i([] each to_h).freeze
 
-  attr_reader :container_names, :container
+  attr_reader :container
 
   query DELEGATE_HASH_QUERIES => :data
 
@@ -19,34 +19,35 @@ class Hand
       new_pile = container.from_json(json_pile)
       result[pile_name.to_sym] = new_pile
     end
-    new(existing, container, as_hash.keys)
+    new(existing, container)
   end
 
-  def self.random(container_names = CONTAINER_NAMES, container = Pile)
-    new(container_names.zip(container.random).to_h)
+  def self.random(container = Pile)
+    random_hand_hash = CONTAINER_NAMES.each_with_object({}) do |name, result|
+      result[name] = container.random
+    end
+    new(random_hand_hash)
   end
 
   def initialize(
     existing = {},
-    container = Pile,
-    container_names = CONTAINER_NAMES
+    container = Pile
   )
     @container = container
-    @container_names = container_names.map(&:to_sym)
-    empty_hand = @container_names.map { |pile| [pile, container.new] }.to_h
-    valid_containers = existing.select { |n, _| @container_names.include?(n) }
+    empty_hand = CONTAINER_NAMES.map { |pile| [pile, container.new] }.to_h
+    valid_containers = existing.select { |n, _| CONTAINER_NAMES.include?(n) }
     @data = empty_hand.merge(valid_containers)
   end
 
   def as_json
     data.each_with_object({}) do |(name, pile), result_hash|
-      result_hash[name] = pile.as_json unless pile.empty?
+      result_hash[name] = pile.as_json
     end
   end
 
   def +(other)
     raise ArgumentError, "Can't add to #{other.class}" unless other.is_a?(Hand)
-    combined = container_names.each_with_object({}) do |pile_name, result|
+    combined = CONTAINER_NAMES.each_with_object({}) do |pile_name, result|
       result[pile_name] = data[pile_name] + other[pile_name]
     end
     self.class.new(combined, container)
@@ -103,35 +104,63 @@ class Hand
 
   def contains?(other)
     raise ArgumentError unless other.is_a?(Hand)
-    has_other_container_names = other.container_names.all? do |name|
-      container_names.include?(name)
-    end
-    return false unless has_other_container_names
-    other.container_names.all? { |name| data[name].contains?(other[name]) }
+    CONTAINER_NAMES.all? { |name| data[name].contains?(other[name]) }
   end
 
   def face_down_only?
     compact.keys == [:face_down]
   end
 
-  protected
+  def face_up_only?
+    compact.keys == [:face_up]
+  end
+
+  def in_hand_only?
+    compact.keys == [:in_hand]
+  end
+
+  def empty?
+    compact.empty?
+  end
+
+  # protected
 
   attr_accessor :data
+
+  def play_hands_per_pile
+    data.each_with_object([]) do |(pile_name, pile), grouped_by_face|
+      pile_play_hands = pile.group_by_face.map do |_face, cards|
+        self.class.new({pile_name => container.new(cards)})
+      end
+      grouped_by_face.concat(pile_play_hands) unless pile_name == :face_down
+    end
+  end
 
   def plays_from_active_pile
     pile_name, active_pile = compact.first
     return {} if active_pile.nil?
     grouped_by_face = active_pile.group_by_face
-    grouped_by_face.map do |face, cards|
+    active_pile_plays = grouped_by_face.map do |face, cards|
       [face, self.class.new(pile_name => container.new(cards))]
     end.to_h
+
+    if active_pile_plays.size == 1 && initial_pile_name == :in_hand && !compact[:face_up].nil?
+      _face_up, face_up_pile = compact[:face_up]
+      extension_plays = face_up_pile.group_by_face[face] unless face_up_pile.nil?
+      unless extension_plays.nil?
+        extension_hand = self.class.new(face_up: extension_plays)
+        active_pile_plays[face] = active_pile_plays[face] + extension_hand
+      end
+    end
+    active_pile_plays
   end
 
   def find_extension_plays(face)
     piles_with_cards = compact
-    _active_pile = piles_with_cards.shift
-
-    piles_with_cards.reduce(self.class.new) do |extension_plays, (pile_name, pile)|
+    active_pile_name, _active_pile = piles_with_cards.shift
+    piles_with_cards.delete(pile_name)
+    empty_hand = self.class.new
+    piles_with_cards.reduce(empty_hand) do |extension_plays, (pile_name, pile)|
       grouped_by_face = pile.group_by_face
       valid = grouped_by_face[face]
       valid_hand = self.class.new(pile_name => grouped_by_face[face])
@@ -142,7 +171,7 @@ class Hand
   end
 
   def take_deal(card, hand_size)
-    container_names.reverse_each do |container_name|
+    CONTAINER_NAMES.reverse_each do |container_name|
       if data[container_name].size < hand_size
         data[container_name].add(card)
         break
