@@ -12,10 +12,10 @@ const ControllablePlayer = (props) => {
   const [selected_cards, setSelectedCards] = useState([])
   const hand_size = props.hand_size
 
-  console.log('Render controllable player: ', name)
-  console.log('cards: ', cards)
-  console.log('selected cards: ', selected_cards)
-  console.log('plays: ', plays)
+  // console.log('Render controllable player: ', name)
+  // console.log('cards: ', cards)
+  // console.log('selected cards: ', selected_cards)
+  // console.log('plays: ', plays)
 
   const hand_card_keys = (hand) => {
     return Object.entries(hand).reduce( (card_keys, [pile_name, pile]) => {
@@ -45,7 +45,7 @@ const ControllablePlayer = (props) => {
   }
 
   const find_playable_card_keys = (playable_plays) => {
-    console.log('find_playable_card_keys: playable_plays=', playable_plays)
+    // console.log('find_playable_card_keys: playable_plays=', playable_plays)
     const x = playable_plays.reduce( (card_keys_in_plays, play) => {
       play_card_keys(play).forEach((card_key) => {
         if (!card_keys_in_plays.includes(card_key)) {
@@ -59,7 +59,7 @@ const ControllablePlayer = (props) => {
   }
 
   const initial_playable_card_keys = find_playable_card_keys(plays)
-  console.log('initial playable card keys: ', initial_playable_card_keys)
+  // console.log('initial playable card keys: ', initial_playable_card_keys)
   const [playable_card_keys, setPlayableCardKeys] = useState(initial_playable_card_keys)
 
   useEffect( () => {
@@ -90,11 +90,11 @@ const ControllablePlayer = (props) => {
     }
   }
 
-  console.log('selecteable_plays: ', selectable_plays)
+  // console.log('selecteable_plays: ', selectable_plays)
   // selectable_plays
-  console.log('selected cards: ', selected_cards)
+  // console.log('selected cards: ', selected_cards)
 
-  console.log('playable_card_keys!!!: ', playable_card_keys)
+  // console.log('playable_card_keys!!!: ', playable_card_keys)
   // playable_card_keys
 
   return (

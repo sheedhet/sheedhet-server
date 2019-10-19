@@ -1,7 +1,7 @@
 export default class Sheedhet {
   // eventually this will include an auth component
   constructor(game_id, position, host) {
-    console.log(`start sheedhet library: game_id: ${game_id}, position: ${position}, host: ${host}`)
+    // console.log(`start sheedhet library: game_id: ${game_id}, position: ${position}, host: ${host}`)
     this.game_id = game_id
     this.position = position
     this.host = host
@@ -43,7 +43,7 @@ export default class Sheedhet {
         let json = await response.json()
         return json
       } else {
-        console.log('server error', response)
+        // console.log('server error', response)
         return false
       }
     }

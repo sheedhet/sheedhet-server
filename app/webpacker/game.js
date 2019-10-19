@@ -5,7 +5,7 @@ import ControllablePlayer from 'controllable_player'
 import Sheedhet from 'sheedhet'
 import 'babel-polyfill'
 import useGameState from 'game_state'
-console.log('React version:', React.version)
+// console.log('React version:', React.version)
 
 const Game = (props) => {
   const container = document.getElementById('sheedhet_container')
@@ -14,15 +14,15 @@ const Game = (props) => {
   const position = container.dataset['position']
 
   const [game_state, setGameState] = useGameState(JSON.parse(state_json))
-  console.log('game_state:', game_state)
-  const sheedhet = new Sheedhet(id, position, 'http://0.0.0.0:3000')
+  // console.log('game_state:', game_state)
+  const sheedhet = new Sheedhet(id, position, 'https://sheedhet.herokuapp.com/')
 
   const opponents = game_state.players.filter(
     player => player.position != position
   )
 
   const submitPlayHandler = (event) => {
-    console.log('submitting form?', event)
+    // console.log('submitting form?', event)
     event.preventDefault()
     const form_data = new FormData(event.target)
     const pile_names = Array.from(form_data.keys())
@@ -36,19 +36,19 @@ const Game = (props) => {
       'destination': destination,
       'position': position
     }
-    console.log('attempting play', play)
+    // console.log('attempting play', play)
     sheedhet.attemptPlay(play).then((new_state) => {
       if (new_state) {
-        console.log('here comes the new state:', new_state)
+        // console.log('here comes the new state:', new_state)
         setGameState(new_state)
       } else {
-        console.log('no new state returned', new_state)
+        // console.log('no new state returned', new_state)
         // nothing really?
       }
     })
   }
 
-  console.log('valid plays::: ',game_state.valid_plays)
+  // console.log('valid plays::: ',game_state.valid_plays)
   return (
     <form
       className="game"
