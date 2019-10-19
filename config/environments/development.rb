@@ -28,7 +28,7 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
-  config.web_console.whitelisted_ips = '172.19.0.1'
+  config.web_console.whitelisted_ips = '172.18.0.1'
   # Don't care if the mailer can't send.
   # config.action_mailer.raise_delivery_errors = false
 

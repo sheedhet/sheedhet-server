@@ -21,13 +21,6 @@ RSpec.describe Hand do
       it { is_expected.to eq(exisiting.merge(face_up: [], face_down: [])) }
     end
 
-    context 'container_names get specified' do
-      let(:container_names) { [:one, :two] }
-      let(:arguments) { [{}, pile, container_names] }
-      let(:result) { container_names.each_with_object({}) { |a, m| m[a] = [] } }
-      it { is_expected.to eq(result) }
-    end
-
     context 'container type gets specified' do
       let(:object) { double('Container') }
       let(:container) { double('ContainerClass', new: object) }

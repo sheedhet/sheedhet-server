@@ -14,13 +14,8 @@ export default class Sheedhet {
   }
 
   attemptPlay(play) {
-    const body = { play: play }
-    console.log('attempt this request:', body)
-    let result = this.putRequest(JSON.stringify(body)).then((good) => {
-      console.log('attempted play then: ', good)
-      return good
-    })
-    console.log('returned from attemptPlay:', result)
+    const body = { 'play': play }
+    let result =  this.putRequest(JSON.stringify(body))
     return result
   }
 
@@ -32,7 +27,7 @@ export default class Sheedhet {
     return this.request('GET')
   }
 
-  request(method, body) {
+  async request(method, body) {
     const config = {
       headers: {
         'Accept': 'application/json',
@@ -41,35 +36,20 @@ export default class Sheedhet {
       method: method,
       body: body
     }
-    return fetch(this.uri(), config).then((response) => {
+
+    try {
+      let response = await fetch(this.uri(), config)
       if (response.ok) {
-        return response.json()
+        let json = await response.json()
+        return json
+      } else {
+        console.log('server error', response)
+        return false
       }
-      throw new Error(`${response.status}: ${response.statusText}`)
-    }).then((data_from_json) => {
-      console.log('successful request:', data_from_json)
-      return data_from_json
-    }).catch((error) => {
-      console.log('Error making request:', error)
+    }
+    catch (err) {
+      console.error('fetch failed:', err)
       return false
-    })
-  }
-
-  update() {
-    console.log('Request update...')
-    const result = this.getRequest().then((good) => {
-      console.log('i wonder what this is?', good)
-      return good
-    })
-    console.log('returned from update: ', result)
-    return result
-  }
-
-  failedResponse() {
-    // get the new state and do a state update
-    console.log('got a failed response, attempting a state update')
-    var updated_state = this.update()
-    console.log('okay now we have an updated state?')
-    return updated_state
+    }
   }
 }

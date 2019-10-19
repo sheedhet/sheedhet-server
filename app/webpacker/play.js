@@ -1,24 +1,18 @@
 import React from 'react'
 
-class Play extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state ={
-      play: props.play,
-      index: props.index,
-    }
+const Play = (props) => {
+  const click_handler = (event) => {
+    event.target.name = 'destination'
+    event.target.value = props.play.destination
+    props.click_handler()
   }
-
-  render() {
-    return(
-      <button
-        className={`play`}
-        id={this.state.index}
-      >
-        <span className="description">{`${this.state.play.destination}`}</span>
-      </button>
+  return(
+    <button
+      className={`play`}
+      type="submit"
+      onClick={click_handler}
+    >{props.play.destination}</button>
     )
   }
-}
 
-export default Play
+  export default Play

@@ -1,26 +1,22 @@
-$cardSize: 1em;
-$cardRatio: 0.7045;
+$cardSize: 5em;
+$cardRatio: 0.7;
 $cardWidth: $cardSize * $cardRatio;
 
 .card {
-  font-size: 10rem;
-  position: relative;
   width: $cardWidth;
   height: $cardSize;
   background-color: #fff;
-  -webkit-border-radius: 0.03em;
-  border-radius: 0.03em;
-  -webkit-box-shadow: 0 0.03em 0.03em rgba(0,0,0,0.15);
-  box-shadow: 0 0.03em 0.03em rgba(0,0,0,0.15);
+  border-radius: 0.3em;
+  box-shadow: 0 0.3em 0.3em rgba(0,0,0,0.15);
   cursor: default;
-  border-width: 0.001em;
+  border-width: 0.1em;
   border-style: solid;
   border-color: #fcfcfc;
   display: block;
 }
 
 .card.playable {
-  border-width: 0.05em;
+  border-width: 0.5rem;
   border-color: #f4f442
 }
 
@@ -32,8 +28,8 @@ $cardWidth: $cardSize * $cardRatio;
   font-family: 'Ubuntu Condensed', sans-serif;
 }
 
-$cardValueMarginTopBot: 0.1em;
-$cardValueMarginLeftRight: 0.15em;
+$cardValueMarginTopBot: 0.1rem;
+$cardValueMarginLeftRight: 0.15rem;
 
 .card:before {
   top: $cardValueMarginTopBot;
@@ -92,7 +88,7 @@ $cardValueMarginLeftRight: 0.15em;
 .card.joker.rank2:after,
 .card.joker.rank3:after {
   content: "J\a O\a K\a E\a R";
-  padding: 0.3em;
+  padding: 0.3rem;
   font-size: $cardSize * 0.0727;
 }
 

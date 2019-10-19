@@ -1,54 +1,64 @@
 .hand {
   display: flex;
   flex-direction: column;
-
   .pile {
-    position: relative;
-    .in_hand {
+    height: 5.5em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    &.in_hand {
       order: 1;
     }
-    .face_up {
-      order: 3;
-    }
-    .face_down {
+    &.face_down {
       order: 2;
     }
+    &.face_up {
+      order: 3;
+      margin-top: -5.5em;
+    }
   }
-}
-
-.pile.face_down {
-  order: 2;
-  z-index: 0;
-}
-.pile.face_up {
-  order: 3;
-  z-index: 1;
-  margin-top: -4.5em;
 }
 
 .self {
-  justify-self: center;
-  width: 85%;
-  .pile.face_down {
-    order: 2;
-    margin-top: -9em;
-  }
-  .pile.face_up {
-    order: 1;
-    margin-top: 0;
-  }
-  .pile.in_hand {
-    order: 3;
-    margin-top: 0;
-  }
-  .submit-play {
-    order: 4;
+  .hand {
+    .pile {
+      &.face_down {
+        order: 1;
+      }
+      &.in_hand {
+        order: 3;
+      }
+      &.face_up {
+        margin-top: -5em;
+        order: 2;
+      }
+    }
   }
 }
 
-.player.has_plays {
-  .player_name {
-    color: yellow;
+.pile_size_limiter {
+  width: calc(100% - 3.5em);
+  display: grid;
+  grid-template-columns: repeat(auto-fit,  minmax(0, 1fr));
+  justify-items: center;
+}
+
+.self {
+  width: 100%;
+  .in_hand {
+    width: 100%;
+    .pile_size_limiter {
+      display: flex;
+      flex-direction: row;
+      overflow-x: scroll;
+      margin: 0 auto;
+      justify-content: space-between;
+    }
+    .card {
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -58,4 +68,5 @@
 
 .player_name {
   font-family: 'Ubuntu Condensed', sans-serif;
+  text-align: center;
 }

@@ -52,7 +52,7 @@ class Play
 
   def first_card
     (_pile_name, cards) = non_empty_piles.first
-    cards.first
+    cards&.first
   end
 
   def in_hand_only?
@@ -77,6 +77,10 @@ class Play
 
   def pick_up_play?
     destination == :in_hand
+  end
+
+  def ten_play?
+    first_card&.face == :'10'
   end
 
   def contains?(other)

@@ -1,6 +1,6 @@
 class SwapPlayExecutor < PlayExecutor
   def valid?
-    play.hand[:face_up].size == play.hand[:in_hand].size
+    play.hand[:face_up].size == play.hand[:in_hand].size && super
   end
 
   def perform_play

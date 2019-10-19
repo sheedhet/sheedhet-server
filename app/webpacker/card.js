@@ -31,9 +31,9 @@ const Card = (props) => {
   const suit = suit_lookup(props.cardString.slice(-1))
   const rank = rank_lookup(props.cardString.slice(0, -1))
   const face_up = props.cardString == 'xx' ? 'back' : 'face'
-  const css_classes = ['card', suit, rank].join(' ')
+  const collapsed = props.collapsed ? 'collapsed' : ''
+  const css_classes = ['card', suit, rank, collapsed].join(' ')
   const card_style = { transform: `rotate(${props.skew_angle}deg)` }
-
   return(
     <label
       className={css_classes}

@@ -1,159 +1,131 @@
-import React from 'react'
+// import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Play from './play'
 import Pile from './pile'
+import CollapsiblePile from './collapsible_pile'
 
-class ControllablePlayer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      name: props.player.name,
-      cards: props.player.cards,
-      plays: props.plays,
-      selected_cards: [],
-    }
-    this.cardClickHandler = this.cardClickHandler.bind(this)
-  }
+const ControllablePlayer = (props) => {
+  const name = props.player.name
+  const cards = props.player.cards
+  const plays = props.plays
+  const [selectable_plays, setSelectablePlays] = useState(plays)
+  const [selected_cards, setSelectedCards] = useState([])
+  const hand_size = props.hand_size
 
-  static getDerivedStateFromProps(props, state) {
-    // wish we didn't have to bust the cache on this state...
-    console.log('updating: ', props, state)
-    let entries = Object.entries(props)
-    let new_state = {}
-    for (const [property, value] of entries) {
-      new_state[property] = value
-    }
-    let hand_card_keys = ControllablePlayer.hand_card_keys(new_state.player.cards, new_state.player.cards)
-    let new_selected_cards = state.selected_cards.filter((card_key) => {
-      return hand_card_keys.includes(card_key)
-    })
-    new_state.selected_cards = new_selected_cards
-    console.log('did we get here?')
+  console.log('Render controllable player: ', name)
+  console.log('cards: ', cards)
+  console.log('selected cards: ', selected_cards)
+  console.log('plays: ', plays)
 
-    return new_state
-  }
-
-  // shouldComponentUpdate(next_props, next_state) {
-    // console.log('are WE updating?')
-    // console.log('props', next_props)
-    // console.log('state:', next_state)
-    // return true
-  // }
-
-  static hand_card_keys(hand, state) {
-    console.log('this stupid hand', hand, state)
-    return Object.keys(hand).reduce((cards, pile_name) => {
-      // gross! we kept mutating the state somehow thus an empty map
-      const pile = hand[pile_name].map(card => card)
-      let player_pile = state[pile_name]
-      console.log('whats up with player pile?', player_pile)
-      player_pile.forEach((card, index) => {
-        console.log('in this loop', card, index)
-        if (pile.includes(card)) {
-          console.log('create a new card', card, index)
-          const card_key = `${pile_name}-${index}-${card}`
-          cards.push(card_key)
-          pile.splice(pile.indexOf(card), 1)
+  const hand_card_keys = (hand) => {
+    return Object.entries(hand).reduce( (card_keys, [pile_name, pile]) => {
+      let unmatched_cards = [...pile]
+      cards[pile_name].forEach( (card, index) => {
+        if (unmatched_cards.includes(card)) {
+          card_keys.push(`${pile_name}-${index}-${card}`)
+          unmatched_cards.splice(unmatched_cards.indexOf(card), 1)
         }
       })
-      return cards
+      const x = card_keys
+      // console.log('play_card_keys: return=', x)
+      return x
     }, [])
   }
 
-  play_card_keys(play) {
+  const play_card_keys = (play) => {
     if (play.destination.startsWith('flip')) {
       const card_index = play.destination.slice(-1)
-      let x = [`face_down-${card_index}-xx`]
-      return x
-    } else if(play.destination == 'in_hand') {
+      return [`face_down-${card_index}-xx`]
+    } else if (play.destination == 'in_hand') {
       // do nothing yet? we need to put inputs on pickup pile
       return []
     } else {
-      let x = this.constructor.hand_card_keys(play.hand, this.state.player.cards)
-      return x
+      return hand_card_keys(play.hand)
     }
   }
 
-  selectable_plays() {
-    console.log('find selectable plays')
-    if (this.state.selected_cards.length > 0){
-      console.log('there are selected cards...', this.state.selected_cards)
-      const selectable_plays = this.state.plays.filter((play) => {
-        const play_card_keys = this.play_card_keys(play)
-        return this.state.selected_cards.every((card_key) => {
-          return play_card_keys.includes(card_key)
-        })
-      })
-      console.log('returning:', selectable_plays)
-      return selectable_plays
-    } else {
-      console.log('no selected cards, all plays:', this.state.plays)
-      return this.state.plays
-    }
-  }
-
-  playable_card_keys(selectable_plays) {
-    let x = selectable_plays.reduce( (card_keys_in_plays, play, i) => {
-      let play_card_keys = this.play_card_keys(play)
-      play_card_keys.forEach((card_key) => {
+  const find_playable_card_keys = (playable_plays) => {
+    console.log('find_playable_card_keys: playable_plays=', playable_plays)
+    const x = playable_plays.reduce( (card_keys_in_plays, play) => {
+      play_card_keys(play).forEach((card_key) => {
         if (!card_keys_in_plays.includes(card_key)) {
           card_keys_in_plays.push(card_key)
         }
       })
       return card_keys_in_plays
     }, [])
-    console.log('dafuq wrong here', x)
+    // console.log('find_playable_card_keys: return=', x)
     return x
   }
 
-  cardClickHandler(event) {
-    console.log('this still work?')
+  const initial_playable_card_keys = find_playable_card_keys(plays)
+  console.log('initial playable card keys: ', initial_playable_card_keys)
+  const [playable_card_keys, setPlayableCardKeys] = useState(initial_playable_card_keys)
+
+  useEffect( () => {
+    const find_new_selectable_plays = () => {
+      if (selected_cards.length > 0) {
+        return plays.filter((play) => {
+          const card_keys_in_play = play_card_keys(play)
+          return selected_cards.every((card_key) => {
+            return card_keys_in_play.includes(card_key)
+          })
+        })
+      } else {
+        return plays
+      }
+    }
+    const new_selectable_plays = find_new_selectable_plays()
+    setSelectablePlays(new_selectable_plays)
+    setPlayableCardKeys(find_playable_card_keys(new_selectable_plays))
+  }, [selected_cards, plays, setSelectablePlays])
+
+  const cardClickHandler = (event) => {
     const checked = event.target.checked
     const key = event.target.id
-    let selected_cards = this.state.selected_cards
     if (checked) {
-      selected_cards.push(key)
+      setSelectedCards([...selected_cards, key])
     } else {
-      selected_cards.splice(selected_cards.indexOf(key), 1)
+      setSelectedCards(selected_cards.filter((card) => card != key))
     }
-    console.log('new selected:', selected_cards)
-    this.setState({
-      selected_cards: selected_cards,
-      selectable_plays: this.selectable_plays()
-    })
   }
 
-  render() {
-    console.log(`ControllablePlayer.render(${this.state.player.name}):` ,this.state.player, this.state.plays)
-    const selectable_plays = this.selectable_plays()
-    const playable_card_keys = this.playable_card_keys(selectable_plays)
-    return (
-      <div className='controllable player'>
-        <span className='player_name'>{this.state.player.name}</span>
-        <div className="hand">
-          {Object.keys(this.state.player.cards).map((pile_name) =>
-            <Pile
-              contents={this.state.player.cards[pile_name]}
-              pile_name={pile_name}
-              key={this.state.player.cards[pile_name].join()}
-              cardOnClick={this.cardClickHandler}
-              playable_card_keys={playable_card_keys}
-              selected_cards={this.state.selected_cards}
-            />
-          )}
-        </div>
-        <div className='plays'>
-          {selectable_plays.map((play, i) => {
-            return (
-              <Play
-                key={i}
-                play={play}
-              />
-            )
-          })}
-        </div>
+  console.log('selecteable_plays: ', selectable_plays)
+  // selectable_plays
+  console.log('selected cards: ', selected_cards)
+
+  console.log('playable_card_keys!!!: ', playable_card_keys)
+  // playable_card_keys
+
+  return (
+    <div className='controllable player'>
+      <span className='player_name'>{name}</span>
+      <div className="hand">
+        {Object.keys(cards).map((pile_name) => {
+          const props_object = {
+            'contents': cards[pile_name],
+            'pile_name': pile_name,
+            'key': pile_name + cards[pile_name].join(),
+            'cardOnClick': cardClickHandler,
+            'playable_card_keys': playable_card_keys,
+            'selected_cards': selected_cards
+          }
+          return (<Pile {...props_object} />)
+        })}
       </div>
-    )
-  }
+      <div className='plays'>
+        {selectable_plays.map((play, i) => {
+          return (
+            <Play
+              key={i}
+              play={play}
+              click_handler={() => setSelectedCards([])}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default ControllablePlayer

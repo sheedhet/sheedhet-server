@@ -80,7 +80,7 @@ class Game
     mid_game_plays = valid_plays_for_next_player
     last_turn_pickup = last_turn[:play].pick_up_play?
     last_turn_flip = last_turn[:play].flip_play?
-    last_turn_ten = last_turn[:play].face == :'10'
+    last_turn_ten = last_turn[:play].ten_play?
     no_continuation_plays = last_turn_pickup || last_turn_ten || last_turn_flip
     unless no_continuation_plays
       continuation_plays = last_to_play.plays.select do |play|

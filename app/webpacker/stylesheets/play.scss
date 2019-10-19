@@ -1,8 +1,8 @@
-.card-selector {
+.card-input {
   display:none;
 }
 
-.card .card-selector:checked + label div {
+.card-input:checked + label {
   background-color: hsla(60, 100%, 50%, 50%);
 }
 
