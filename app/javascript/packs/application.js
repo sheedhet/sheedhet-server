@@ -17,7 +17,7 @@
 // layout file, like app/views/layouts/application.html.erb
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
-import 'stylesheets.scss'
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 
