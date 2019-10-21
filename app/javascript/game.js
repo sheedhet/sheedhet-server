@@ -3,7 +3,7 @@ import Player from 'player'
 import Pile from 'pile'
 import ControllablePlayer from 'controllable_player'
 import Sheedhet from 'sheedhet'
-import 'babel-polyfill'
+// import 'babel-polyfill'
 import useGameState from 'game_state'
 // console.log('React version:', React.version)
 
