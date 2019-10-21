@@ -1,17 +1,23 @@
-FROM ruby:2.5
-RUN apt-get update -qq
-
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
-RUN apt-get install -y nodejs
-RUN apt-get update && apt-get install -y yarn
-RUN apt-get install -y build-essential
+FROM ruby:2.6-alpine
+RUN apk add --no-cache --update build-base \
+                                linux-headers \
+                                git \
+                                nodejs \
+                                yarn \
+                                tzdata
 
 RUN mkdir /sheedhet-server
 WORKDIR /sheedhet-server
 COPY Gemfile /sheedhet-server/Gemfile
 COPY Gemfile.lock /sheedhet-server/Gemfile.lock
-VOLUME /sheedhet-server
 RUN bundle install
+COPY . /sheedhet-server
+
+# Add a script to be executed every time the container starts.
+# COPY entrypoint.sh /usr/bin/
+# RUN chmod +x /usr/bin/entrypoint.sh
+# ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 3000
+
+# Start the main process.
+CMD ["rails", "server", "-b", "0.0.0.0"]

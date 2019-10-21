@@ -12,6 +12,14 @@ class PlayExecutor
 
   def valid?
     game.valid_plays.any? { |valid_play| valid_play.contains?(play) }
+
+
+    # ##################################################################
+    # SERIOUS PROBLEM WHERE WE CAN PLAY A KING FROM FACE_UP AS LONG AS
+    # THERES ONLY OTHER KINGS IN IN_HAND!
+    # WE MUST ENSURE THAT EITHER THE PLAY INCLUDES THE OTHER KINGS
+    # OR THAT IN_HAND IS OTHERWISE EMPTY??
+    # ##################################################################
   end
 
   def execute!
