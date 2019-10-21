@@ -72,9 +72,7 @@ const ControllablePlayer = (props) => {
           })
         })
       } else {
-        return plays.filter((play) => {
-          return play.destination == 'in_hand'
-        })
+        return plays
       }
     }
     const new_selectable_plays = find_new_selectable_plays()
@@ -116,7 +114,9 @@ const ControllablePlayer = (props) => {
         })}
       </div>
       <div className='plays'>
-        {selectable_plays.map((play, i) => {
+        {selectable_plays.filter((play) => {
+          return play.destination == 'in_hand' || selected_cards.size > 0
+        }).map((play, i) => {
           return (
             <Play
               key={i}
