@@ -15,8 +15,8 @@ const Game = (props) => {
 
   const [game_state, setGameState] = useGameState(JSON.parse(state_json))
   // console.log('game_state:', game_state)
-  // const sheedhet = new Sheedhet(id, position, 'https://sheedhet.herokuapp.com/')
-  const sheedhet = new Sheedhet(id, position, 'http://0.0.0.0:3000')
+  const sheedhet = new Sheedhet(id, position, window.location.origin)
+  // const sheedhet = new Sheedhet(id, position, 'http://0.0.0.0:3000')
 
   const opponents = game_state.players.filter(
     player => player.position != position
