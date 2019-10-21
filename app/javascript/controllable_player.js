@@ -72,7 +72,9 @@ const ControllablePlayer = (props) => {
           })
         })
       } else {
-        return plays
+        return plays.filter((play) => {
+          return play.destination == 'in_hand'
+        })
       }
     }
     const new_selectable_plays = find_new_selectable_plays()
