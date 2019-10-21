@@ -59,6 +59,9 @@
     .card {
       flex-shrink: 0;
     }
+    .card-input + .card {
+      border-color: hsl(65, 100, 50);
+    }
   }
 }
 
