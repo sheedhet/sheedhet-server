@@ -1,9 +1,3 @@
 plugins:
   postcss-import: {}
-  postcss-cssnext: {
-    features: {
-      customProperties: {
-        warnings: false
-      }
-    }
-  }
+  postcss-cssnext: {}

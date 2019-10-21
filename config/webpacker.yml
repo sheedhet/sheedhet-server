@@ -1,10 +1,11 @@
 # Note: You must restart bin/webpack-dev-server for changes to take effect
 
 default: &default
-  source_path: app/webpacker
+  source_path: app/javascript
   source_entry_path: packs
   public_output_path: packs
   cache_path: tmp/cache/webpacker
+  webpack_compile_output: true
 
   # Additional paths webpack should lookup modules
   # ['app/assets', 'engine/foo/app/assets']
@@ -35,9 +36,9 @@ development:
   # Reference: https://webpack.js.org/configuration/dev-server/
   dev_server:
     https: false
-    host: webpacker
+    host: localhost
     port: 3035
-    public: 0.0.0.0:3035
+    public: localhost:3035
     hmr: false
     # Inline should be set to true if using HMR
     inline: true
@@ -49,7 +50,7 @@ development:
     headers:
       'Access-Control-Allow-Origin': '*'
     watch_options:
-      ignored: /node_modules/
+      ignored: '**/node_modules/**'
 
 
 test:
