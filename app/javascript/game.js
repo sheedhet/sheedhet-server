@@ -27,7 +27,7 @@ const Game = (props) => {
     delete new_state.id
     if (JSON.stringify(new_state) === JSON.stringify(game_state)) {
     } else {
-      console.log('here comes the new state:', new_state)
+      // console.log('here comes the new state:', new_state)
       setGameState(new_state)
     }
   }
@@ -39,7 +39,7 @@ const Game = (props) => {
       if (new_state) {
         smartSetGameState(new_state)
       } else {
-        console.log('no new state returned')
+        // console.log('no new state returned')
         // nothing really?
       }
     })
@@ -48,7 +48,7 @@ const Game = (props) => {
   const submitPlayHandler = (event) => {
     setUpdateDelay(10000)
     event.preventDefault()
-    console.log('submitting form?', event)
+    // console.log('submitting form?', event)
     const form_data = new FormData(event.target)
     const pile_names = Array.from(form_data.keys())
     const destination = event.target['destination'].value
@@ -61,14 +61,14 @@ const Game = (props) => {
       'destination': destination,
       'position': position
     }
-    console.log('attempting play', play)
+    // console.log('attempting play', play)
     sheedhet.attemptPlay(play).then((new_state) => {
       if (new_state) {
-        console.log('here comes the new state:', new_state)
+        // console.log('here comes the new state:', new_state)
         smartSetGameState(new_state)
 
       } else {
-        console.log('no new state returned', new_state)
+        // console.log('no new state returned', new_state)
         // nothing really?
       }
       setUpdateDelay(1000)
