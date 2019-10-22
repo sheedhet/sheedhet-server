@@ -2,7 +2,6 @@ import React from 'react'
 
 const Play = (props) => {
   const click_handler = (event) => {
-    console.log('what the fuck buddy?')
     event.target.name = 'destination'
     event.target.value = props.play.destination
   }

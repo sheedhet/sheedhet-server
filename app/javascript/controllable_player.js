@@ -5,7 +5,7 @@ import Pile from './pile'
 import CollapsiblePile from './collapsible_pile'
 
 const ControllablePlayer = (props) => {
-  console.log('the controllable player: ', props)
+  // console.log('the controllable player: ', props)
   const name = props.player.name
   const cards = props.player.cards
   const plays = props.plays
@@ -67,9 +67,9 @@ const ControllablePlayer = (props) => {
   }, [cards])
 
   useEffect( () => {
-    console.log('selectable plays and playable card keys update')
+    // console.log('selectable plays and playable card keys update')
     const find_new_selectable_plays = () => {
-      console.log('find new selectable plays', selected_cards, plays)
+      // console.log('find new selectable plays', selected_cards, plays)
       if (selected_cards.length > 0) {
         let x =  plays.filter((play) => {
           const card_keys_in_play = play_card_keys(play)
@@ -77,10 +77,10 @@ const ControllablePlayer = (props) => {
             return card_keys_in_play.includes(card_key)
           })
         })
-        console.log('find_selectable_plays: returning', x)
+        // console.log('find_selectable_plays: returning', x)
         return x
       } else {
-        console.log('find_selectable_plays: returning', plays)
+        // console.log('find_selectable_plays: returning', plays)
         return plays
       }
     }
@@ -90,8 +90,8 @@ const ControllablePlayer = (props) => {
   }, [selected_cards, plays, setSelectablePlays])
 
   useEffect( () => {
-    console.log('displayable plays update')
-    console.log('this should be running...', selected_cards, selectable_plays)
+    // console.log('displayable plays update')
+    // console.log('this should be running...', selected_cards, selectable_plays)
     const find_displayable_plays = () => {
       return selectable_plays.filter( (play) => {
         const destination = play.destination
