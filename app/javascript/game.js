@@ -3,8 +3,9 @@ import Player from 'player'
 import Pile from 'pile'
 import ControllablePlayer from 'controllable_player'
 import Sheedhet from 'sheedhet'
-import 'babel-polyfill'
+import 'babel-polyfill' // Enables async/await for babel
 import useGameState from 'game_state'
+import useInterval from 'use_interval'
 // console.log('React version:', React.version)
 
 const Game = (props) => {
@@ -22,9 +23,32 @@ const Game = (props) => {
     player => player.position != position
   )
 
+  const smartSetGameState = (new_state) => {
+    delete new_state.id
+    if (JSON.stringify(new_state) === JSON.stringify(game_state)) {
+    } else {
+      console.log('here comes the new state:', new_state)
+      setGameState(new_state)
+    }
+  }
+
+  const [update_delay, setUpdateDelay] = useState(1000);
+
+  useInterval(() => {
+    sheedhet.updateState().then((new_state) => {
+      if (new_state) {
+        smartSetGameState(new_state)
+      } else {
+        console.log('no new state returned')
+        // nothing really?
+      }
+    })
+  }, update_delay)
+
   const submitPlayHandler = (event) => {
-    // console.log('submitting form?', event)
+    setUpdateDelay(10000)
     event.preventDefault()
+    console.log('submitting form?', event)
     const form_data = new FormData(event.target)
     const pile_names = Array.from(form_data.keys())
     const destination = event.target['destination'].value
@@ -37,15 +61,17 @@ const Game = (props) => {
       'destination': destination,
       'position': position
     }
-    // console.log('attempting play', play)
+    console.log('attempting play', play)
     sheedhet.attemptPlay(play).then((new_state) => {
       if (new_state) {
-        // console.log('here comes the new state:', new_state)
-        setGameState(new_state)
+        console.log('here comes the new state:', new_state)
+        smartSetGameState(new_state)
+
       } else {
-        // console.log('no new state returned', new_state)
+        console.log('no new state returned', new_state)
         // nothing really?
       }
+      setUpdateDelay(1000)
     })
   }
 

@@ -19,6 +19,10 @@ export default class Sheedhet {
     return result
   }
 
+  updateState() {
+    return this.getRequest()
+  }
+
   putRequest(body) {
     return this.request('PUT', body)
   }
@@ -36,7 +40,6 @@ export default class Sheedhet {
       method: method,
       body: body
     }
-
     try {
       let response = await fetch(this.uri(), config)
       if (response.ok) {
