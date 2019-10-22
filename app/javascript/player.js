@@ -2,7 +2,7 @@ import React from 'react'
 import Pile from 'pile'
 
 const Player = (props) => {
-  console.log(`Player.render(${props.player.name})`, props.player)
+  // console.log(`Player.render(${props.player.name})`, props.player)
   return (
     <div className='player'>
       <a href={props.uri}>

@@ -64,6 +64,26 @@
   }
 }
 
+button.play {
+  bottom: 55vh;
+  position: absolute;
+  right: 3vw;
+
+  font-size: 3rem;
+  font-family: 'Ubuntu Condensed', sans-serif;
+  height: 10rem;
+  width: 10rem;
+  border-radius: 50%;
+  &[data-destination='in_hand'] {
+    right: unset;
+    bottom: unset;
+    font-size: 2rem;
+    top: 33vh;
+    height: 7rem;
+    width: 7rem;
+  }
+}
+
 .self {
   font-size: 2em;
   overflow: hidden;

@@ -63,6 +63,9 @@
       border-color: hsl(78, 100, 75);
     }
   }
+  .card-input + .card {
+    border-color: hsl(65, 100, 50);
+  }
 }
 
 .player {

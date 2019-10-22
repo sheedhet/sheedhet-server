@@ -5,17 +5,13 @@ import Pile from './pile'
 import CollapsiblePile from './collapsible_pile'
 
 const ControllablePlayer = (props) => {
+  console.log('the controllable player: ', props)
   const name = props.player.name
   const cards = props.player.cards
   const plays = props.plays
   const [selectable_plays, setSelectablePlays] = useState(plays)
+  const [displayable_plays, setDisplayablePlays] = useState([])
   const [selected_cards, setSelectedCards] = useState([])
-  const hand_size = props.hand_size
-
-  // console.log('Render controllable player: ', name)
-  // console.log('cards: ', cards)
-  // console.log('selected cards: ', selected_cards)
-  // console.log('plays: ', plays)
 
   const hand_card_keys = (hand) => {
     return Object.entries(hand).reduce( (card_keys, [pile_name, pile]) => {
@@ -63,15 +59,28 @@ const ControllablePlayer = (props) => {
   const [playable_card_keys, setPlayableCardKeys] = useState(initial_playable_card_keys)
 
   useEffect( () => {
+    const all_card_keys = hand_card_keys(cards)
+    const new_selected_cards = selected_cards.filter( (card_key) => {
+      return all_card_keys.includes(card_key)
+    })
+    setSelectedCards(new_selected_cards)
+  }, [cards])
+
+  useEffect( () => {
+    console.log('selectable plays and playable card keys update')
     const find_new_selectable_plays = () => {
+      console.log('find new selectable plays', selected_cards, plays)
       if (selected_cards.length > 0) {
-        return plays.filter((play) => {
+        let x =  plays.filter((play) => {
           const card_keys_in_play = play_card_keys(play)
           return selected_cards.every((card_key) => {
             return card_keys_in_play.includes(card_key)
           })
         })
+        console.log('find_selectable_plays: returning', x)
+        return x
       } else {
+        console.log('find_selectable_plays: returning', plays)
         return plays
       }
     }
@@ -79,6 +88,32 @@ const ControllablePlayer = (props) => {
     setSelectablePlays(new_selectable_plays)
     setPlayableCardKeys(find_playable_card_keys(new_selectable_plays))
   }, [selected_cards, plays, setSelectablePlays])
+
+  useEffect( () => {
+    console.log('displayable plays update')
+    console.log('this should be running...', selected_cards, selectable_plays)
+    const find_displayable_plays = () => {
+      return selectable_plays.filter( (play) => {
+        const destination = play.destination
+        if (selected_cards.length > 0) {
+          if (destination == 'swap') {
+            const selected_in_hand = selected_cards.filter((card_key) => {
+              return (card_key.split('-')[0] == 'in_hand')
+            })
+            const selected_face_up = selected_cards.filter((card_key) => {
+              return (card_key.split('-')[0] == 'face_up')
+            })
+            return selected_in_hand.length == selected_face_up.length
+          } else {
+            return true
+          }
+        } else {
+          return destination == 'in_hand'
+        }
+      })
+    }
+    setDisplayablePlays(find_displayable_plays())
+  }, [selectable_plays, selected_cards])
 
   const cardClickHandler = (event) => {
     const checked = event.target.checked
@@ -89,13 +124,6 @@ const ControllablePlayer = (props) => {
       setSelectedCards(selected_cards.filter((card) => card != key))
     }
   }
-
-  // console.log('selecteable_plays: ', selectable_plays)
-  // selectable_plays
-  // console.log('selected cards: ', selected_cards)
-
-  // console.log('playable_card_keys!!!: ', playable_card_keys)
-  // playable_card_keys
 
   return (
     <div className='controllable player'>
@@ -114,14 +142,11 @@ const ControllablePlayer = (props) => {
         })}
       </div>
       <div className='plays'>
-        {selectable_plays.filter((play) => {
-          return play.destination == 'in_hand' || selected_cards.size > 0
-        }).map((play, i) => {
+        {displayable_plays.map((play, i) => {
           return (
             <Play
               key={i}
               play={play}
-              click_handler={() => setSelectedCards([])}
             />
           )
         })}
