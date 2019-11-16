@@ -10,13 +10,16 @@
     padding-bottom: 1vh;
     &.in_hand {
       order: 1;
+      z-index: 2;
     }
     &.face_down {
       order: 2;
+      z-index: 0;
     }
     &.face_up {
       order: 3;
       margin-top: -5.5em;
+      z-index: 1;
     }
   }
 }
@@ -55,6 +58,8 @@
       overflow-x: scroll;
       margin: 0 auto;
       justify-content: space-between;
+      align-items: center;
+      height: 6em;
     }
     .card {
       flex-shrink: 0;

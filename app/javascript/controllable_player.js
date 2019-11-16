@@ -126,7 +126,7 @@ const ControllablePlayer = (props) => {
   }
 
   return (
-    <div className='controllable player'>
+    <div className='controllable player' data-position={props.player.position}>
       <span className='player_name'>{name}</span>
       <div className="hand">
         {Object.keys(cards).map((pile_name) => {

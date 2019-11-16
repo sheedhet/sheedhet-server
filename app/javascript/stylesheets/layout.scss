@@ -9,12 +9,14 @@
   display: grid;
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   grid-template-rows: 33vh 17vh 50vh;
 }
 
 .opponents {
   display: grid;
   grid-template-columns: 50vw 50vw;
+  z-index: 0;
   .player {
     padding: 1vh 1vw;
     font-size: 1em;
@@ -23,6 +25,7 @@
 
 .community {
   font-size: 1.5em;
+  z-index: 1;
   .pile {
     margin: 0 auto;
     width: 100%;
@@ -74,6 +77,15 @@ button.play {
   height: 10rem;
   width: 10rem;
   border-radius: 50%;
+
+  background-color: #3ea5ff;
+  border: black 1px solid;
+  box-shadow: inset 0px 2px 0px 0px #dae7ff;
+  background: linear-gradient(to bottom, #a8aeff 5%, #738aff 100%);
+  &:hover {
+    background: linear-gradient(to bottom, #738aff 5%, #a8aeff 100%);
+  }
+
   &[data-destination='in_hand'] {
     right: unset;
     bottom: unset;
@@ -85,8 +97,10 @@ button.play {
 }
 
 .self {
+  display: grid;
+  grid-template-columns: 100vw;
   font-size: 2em;
-  overflow: hidden;
+  z-index: 2;
 }
 
 .player_name {

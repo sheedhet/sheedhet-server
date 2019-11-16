@@ -4,7 +4,7 @@ import Pile from 'pile'
 const Player = (props) => {
   // console.log(`Player.render(${props.player.name})`, props.player)
   return (
-    <div className='player'>
+    <div className='player' data-position={props.player.position}>
       <a href={props.uri}>
         <span className='player_name'>{props.player.name}</span>
       </a>

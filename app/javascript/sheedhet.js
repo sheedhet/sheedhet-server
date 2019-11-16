@@ -51,8 +51,7 @@ export default class Sheedhet {
       }
     }
     catch (err) {
-      console.error('fetch failed:', err)
-      return false
+      throw Error(err);
     }
   }
 }
